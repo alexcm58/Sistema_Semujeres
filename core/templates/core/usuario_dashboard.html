@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - SEMUJERES</title>
+    <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+</head>
+<body>
+
+    <!-- Barra superior institucional -->
+    <div class="barra-superior">
+        <div class="barra-izquierda">
+            <img src="{% static 'core/img/zaclogo.jpeg' %}" alt="Zacatecas Logo" class="logo-barra">
+            <a href="https://zacatecas.gob.mx" class="link-zacatecas" target="_blank">zacatecas.gob.mx</a>
+        </div>
+        <div class="barra-derecha">
+            <a href="#">TRÁMITE</a>
+            <a href="#">GOBIERNO</a>
+            <a href="#">PERFIL</a>
+
+            <a href="{% url 'logout' %}" class="boton-salir">SALIR</a>
+        </div>
+    </div>
+
+    <!-- Banner del Modelo -->
+    <div class="banner-modelo">
+        <img src="{% static 'core/img/modelo_igualdad.png' %}" alt="Modelo Igualdad" class="logo-modelo-banner">
+    </div>
+
+    <!-- Contenido principal -->
+    <main class="contenido">
+        <h2>SUBIR DOCUMENTOS</h2>
+        <p>Lorem ipsum dolor sit amet consectetur adipiscing, elit cum curabitur habitasse dignissim venenatis</p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table class="tabla-documentos">
+                <thead>
+                    <tr>
+                        <th>Documento</th>
+                        <th>Fecha de Subida</th>
+                        <th>Archivo</th>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí irán los documentos en bucle con Django -->
+                    {% comment %} 
+                    {% for doc in documentos %}
+                    <tr>
+                        <td>{{ doc.nombre_documento }}</td>
+                        <td>{{ doc.fecha_subida|date:"d-m-Y" }}</td>
+                        <td><input type="file" name="documento_{{ doc.id }}"></td>
+                        <td>{{ doc.archivo.name }}</td>
+                        <td>{{ doc.get_estado_display }}</td>
+                        <td>{{ doc.observaciones }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endcomment %}
+                    
+                    <!-- Simulación de filas estáticas mientras tanto -->
+                    <tr>
+                        <td>Modelo</td>
+                        <td>DD-MM-YYYY</td>
+                        <td><input type="file"></td>
+                        <td>Nombre archivo</td>
+                        <td><span class="estado aprobado">✔</span></td>
+                        <td>Lorem ipsum dolor sit amet...</td>
+                    </tr>
+                    <tr>
+                        <td>Manual</td>
+                        <td>DD-MM-YYYY</td>
+                        <td><input type="file"></td>
+                        <td>Nombre archivo</td>
+                        <td><span class="estado pendiente">●</span></td>
+                        <td>Lorem ipsum dolor sit amet...</td>
+                    </tr>
+                    <tr>
+                        <td>Anexo 1</td>
+                        <td>DD-MM-YYYY</td>
+                        <td><input type="file"></td>
+                        <td>Nombre archivo</td>
+                        <td><span class="estado rechazado">✘</span></td>
+                        <td>Lorem ipsum dolor sit amet...</td>
+                    </tr>
+                    <!-- Agrega más según lo necesites -->
+                </tbody>
+            </table>
+
+            <div class="boton-subida">
+                <button type="submit">Subir archivos</button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-contenido">
+            <div class="footer-redes">
+                <p>REDES SOCIALES</p>
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-youtube"></i>
+            </div>
+            <div class="footer-info">
+                <p>Ciudad Administrativa · Edificio K Piso 1</p>
+                <p>Oficina Cerro del Gato, CP 98160, Zacatecas</p>
+                <p>452 491 50 00 Ext. 45239</p>
+                <p>semujer@zacatecas.gob.mx</p>
+                <p>Lunes a Viernes de 8:30 a 16:00 horas</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

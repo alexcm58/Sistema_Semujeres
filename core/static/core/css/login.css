@@ -1,0 +1,135 @@
+
+
+.header {
+    text-align: center;
+    padding: 30px;
+}
+
+.header img {
+    height: 60px;
+}
+
+.header h1 {
+    font-size: 20px;
+    color: #651E29;
+    margin-top: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.login-container {
+    max-width: 350px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: white;
+    box-shadow: 0 0 10px #ccc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.login-container input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.login-container button {
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 95%;
+}
+
+.links {
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+footer {
+    background-color: #651E29;
+    color: white;
+    padding: 20px;
+    font-size: 0.85em;
+    text-align: center;
+    margin-top: 40px;
+}
+
+
+/* Escudo pequeño y centrado */
+.header {
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.escudo {
+    height: 40px;
+    object-fit: contain;
+}
+
+/* Banner grande del modelo */
+.banner-modelo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.logo-modelo-banner {
+    width: 100%;
+    max-width: 800px; /* controla el tamaño máximo sin deformar */
+    height: auto;
+    object-fit: contain;
+}
+body {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+    min-height: 100vh;         /* que al menos ocupe la pantalla completa */
+    overflow-y: auto;          /* permite scroll vertical */
+}
+/* Barra institucional */
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 30px;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+.barra-izquierda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-barra {
+    height: 30px;
+}
+
+.link-zacatecas {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+}
+
+.barra-derecha a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.barra-derecha a:hover {
+    color: #651E29;
+}

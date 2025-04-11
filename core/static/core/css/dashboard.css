@@ -1,0 +1,152 @@
+/* General */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f9f9f9;
+}
+
+/* Barra superior */
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 10px 30px;
+    border-bottom: 1px solid #ddd;
+}
+
+.barra-izquierda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-barra {
+    height: 45px;
+}
+
+.link-zacatecas {
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.barra-derecha a {
+    margin-left: 20px;
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Banner principal */
+.banner-modelo {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.logo-modelo-banner {
+    width: 80%;
+    max-width: 800px;
+}
+
+/* Contenido principal */
+.contenido {
+    text-align: center;
+    padding: 20px;
+}
+
+.contenido h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.contenido p {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 30px;
+}
+
+/* Tabla */
+.tabla-documentos {
+    width: 90%;
+    margin: 0 auto 30px auto;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.tabla-documentos th,
+.tabla-documentos td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.tabla-documentos th {
+    background-color: #eee;
+    font-weight: bold;
+}
+
+.tabla-documentos input[type="file"] {
+    width: 140px;
+}
+
+/* Estado */
+.estado {
+    font-size: 18px;
+    font-weight: bold;
+}
+.estado.aprobado {
+    color: green;
+}
+.estado.pendiente {
+    color: goldenrod;
+}
+.estado.rechazado {
+    color: red;
+}
+
+/* Botón */
+.boton-subida {
+    margin-top: 20px;
+}
+
+.boton-subida button {
+    background-color: #541722;
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.boton-subida button:hover {
+    background-color: #7a2432;
+}
+
+/* Footer */
+footer {
+    background-color: #541722;
+    color: white;
+    padding: 20px 30px;
+    text-align: center;
+}
+
+.footer-contenido {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-redes i {
+    margin: 0 10px;
+    font-size: 18px;
+}
+
+.footer-info p {
+    margin: 5px 0;
+    font-size: 13px;
+}

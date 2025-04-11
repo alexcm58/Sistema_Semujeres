@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" href="{% static 'core/css/login.css' %}">
+</head>
+<body>
+
+       <!-- Barra institucional superior -->
+<div class="barra-superior">
+    <div class="barra-izquierda">
+        <img src="{% static 'core/img/zaclogo.jpeg' %}" alt="Zacatecas Logo" class="logo-barra">
+        <a href="https://zacatecas.gob.mx" class="link-zacatecas" target="_blank">zacatecas.gob.mx</a>
+    </div>
+    <div class="barra-derecha">
+        <a href="https://www.zacatecas.gob.mx/tramites/" target="_blank">TRÁMITE</a>
+        <a href="https://www.zacatecas.gob.mx/gobierno/" target="_blank">GOBIERNO</a>
+    </div>
+</div>
+
+    
+    <!-- Banner del Modelo -->
+    <div class="banner-modelo">
+        <img src="{% static 'core/img/modelo_igualdad.png' %}" alt="Modelo Igualdad" class="logo-modelo-banner">
+    </div>
+
+        
+
+    <div class="login-container">
+        <form method="post">
+            {% csrf_token %}
+            <input type="email" name="correo" placeholder="Correo electrónico" required><br>
+            <input type="password" name="password" placeholder="Contraseña" required><br>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+        <div class="links">
+            <a href="#">¿Olvidaste tu contraseña?</a> | <a href="#">Crear cuenta</a>
+        </div>
+    </div>
+
+    {% if error %}
+  <p style="color: red;">{{ error }}</p>
+{% endif %}
+
+
+    <footer>
+        Secretaría de las Mujeres · Gobierno del Estado de Zacatecas · semujer@zacatecas.gob.mx
+    </footer>
+</body>
+</html>
+
