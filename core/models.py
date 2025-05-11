@@ -1,13 +1,13 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
+
+# models.py
 
 ROLES = [
     ('usuario', 'Usuario'),
     ('admin', 'Administrador'),
 ]
-
-
-
 
 class Usuario(AbstractUser):
     nombre_responsable = models.CharField(max_length=100)
@@ -18,12 +18,10 @@ class Usuario(AbstractUser):
     def __str__(self):
         return f"{self.username} - {self.entidad_federativa}"
 
-from django.db import models
-from django.conf import settings
-
+    
 ESTADOS = [
     ('pendiente', '🟡 Pendiente'),
-    ('aprobado', '✅ Aprobado'),
+    ('validado', '✅ Validado'),  # 👈 Cambié aquí
     ('rechazado', '❌ Rechazado'),
 ]
 

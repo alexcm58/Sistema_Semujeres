@@ -1,0 +1,89 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+{% block title %}Revisión de documentación{% endblock %}
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'core/css/admin_revision_documentacion.css' %}">
+
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>REVISIÓN DOCUMENTACIÓN</h1>
+    <p>Seleccione una entidad para validar su documentación</p>
+
+    <form method="get">
+        <div class="entidad-section">
+            <select name="entidad" onchange="this.form.submit()">
+                <option value="">Seleccione una entidad</option>
+                {% for entidad in entidades %}
+                    <option value="{{ entidad.id }}" {% if entidad_seleccionada and entidad.id == entidad_seleccionada.id %}selected{% endif %}>
+                        {{ entidad.get_full_name|default:entidad.username }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    {% if documentos %}
+    <form method="post">
+        {% csrf_token %}
+
+        {% if entidad_seleccionada %}
+            <div class="barra-contenedor">
+                <p>Documentos validados: {{ porcentaje_validados }}%</p>
+                <div class="barra-progreso">
+                    <div class="barra-relleno" style="width:{{porcentaje_validados}}%"></div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="table-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Documento</th>
+                        <th>Vista Previa</th>
+                        <th>Validar Estado</th>
+                        <th>Descargar</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for documento in documentos %}
+                    <tr>
+                        <td>{{ documento.nombre_documento }}</td>
+                        <td>
+                            {% if documento.archivo %}
+                                <a href="{{ documento.archivo.url }}" target="_blank">Vista</a>
+                            {% else %}
+                                No subido
+                            {% endif %}
+                        </td>
+                        <td>
+                            <select name="estado_{{ documento.id }}">
+                                <option value="pendiente" {% if documento.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                                <option value="validado" {% if documento.estado == 'validado' %}selected{% endif %}>Validado</option>
+                                <option value="rechazado" {% if documento.estado == 'rechazado' %}selected{% endif %}>Rechazado</option>
+                            </select>
+                        </td>
+                        <td>
+                            {% if documento.archivo %}
+                                <a href="{{ documento.archivo.url }}" download>Descargar</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            <textarea name="observaciones_{{ documento.id }}">{{ documento.observaciones }}</textarea>
+                            <input type="hidden" name="documento_id" value="{{ documento.id }}">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="submit">GUARDAR</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

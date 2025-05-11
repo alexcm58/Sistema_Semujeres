@@ -1,0 +1,42 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block title %}Perfil del Administrador{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/admin_perfil.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="formulario-admin">
+    <h2>Editar Perfil</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <p>
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </p>
+        <p>
+            {{ form.entidad_federativa.label_tag }}
+            {{ form.entidad_federativa }}
+        </p>
+        <p>
+            {{ form.correo.label_tag }}
+            {{ form.correo }}
+        </p>
+        <p>
+            {{ form.rol.label_tag }}
+            {{ form.rol }}
+        </p>
+        <p>
+            {{ form.is_active.label_tag }}
+            {{ form.is_active }}
+        </p>
+
+        <button type="submit" class="boton-accion">Guardar Cambios</button>
+    </form>
+</div>
+
+{% endblock %}

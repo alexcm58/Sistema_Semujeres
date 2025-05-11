@@ -1,0 +1,69 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: white;
+}
+
+.contenedor-formulario {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.contenedor-formulario h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.formulario-creacion .campo-formulario {
+    margin-bottom: 20px;
+}
+
+.formulario-creacion label {
+    display: block;
+    margin-bottom: 6px;
+    color: #333;
+    font-weight: 500;
+}
+
+.formulario-creacion input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.formulario-creacion button {
+    width: 100%;
+    padding: 12px;
+    background-color: #621d28;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.formulario-creacion button:hover {
+    background-color: #621d28;
+}
+
+.messages {
+    margin: 20px auto;
+    width: 80%;
+    padding: 10px;
+}
+
+.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    padding: 10px;
+}

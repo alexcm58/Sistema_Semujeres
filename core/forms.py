@@ -1,19 +1,41 @@
 # core/forms.py
 
 from django import forms
-from .models import Usuario  # asegúrate que es tu modelo personalizado
+from .models import Usuario
+
+# forms.py
 
 class CrearUsuarioForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label="Confirmar contraseña")
 
     class Meta:
         model = Usuario
         fields = [
             'username',
-            'nombre_responsable',
             'entidad_federativa',
             'correo',
             'rol',
             'password',
+            'confirm_password',
+            'is_active',
+        ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password and confirm_password and password != confirm_password:
+            self.add_error('confirm_password', "Las contraseñas no coinciden")
+
+class EditarUsuarioForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = [
+            'username',
+            'entidad_federativa',
+            'correo',
+            'rol',
             'is_active',
         ]

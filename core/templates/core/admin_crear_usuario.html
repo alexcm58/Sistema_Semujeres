@@ -1,0 +1,67 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block title %}Crear usuario{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/admin_crear_usuario.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<div class="contenedor-formulario">
+    <h2>Crear nueva cuenta</h2>
+    <form method="post" class="formulario-creacion">
+        {% csrf_token %}
+
+        <div class="campo-formulario">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+
+        <div class="campo-formulario">
+            {{ form.entidad_federativa.label_tag }}
+            {{ form.entidad_federativa }}
+            {{ form.entidad_federativa.errors }}
+        </div>
+
+        <div class="campo-formulario">
+            {{ form.correo.label_tag }}
+            {{ form.correo }}
+            {{ form.correo.errors }}
+        </div>
+
+        <div class="campo-formulario">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            {{ form.password.errors }}
+        </div>
+
+        <div class="campo-formulario">
+            {{ form.confirm_password.label_tag }}
+            {{ form.confirm_password }}
+            {{ form.confirm_password.errors }}
+        </div>
+
+        <div class="campo-formulario">
+            {{ form.rol.label_tag }}
+            {{ form.rol }}
+            {{ form.rol.errors }}
+        </div>
+
+        <button href="{% url 'admin_revision_documentacion' %}" type="submit">Crear usuario</button>
+    </form>
+
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,24 @@
+
+.menu-usuarios-admin{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 60px
+}
+
+.boton-accion {
+    padding: 15px 30px;
+    background-color: #880e4f;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.boton-accion:hover {
+    background-color: #880e4f;
+}

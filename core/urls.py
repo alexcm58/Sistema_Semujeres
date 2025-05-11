@@ -1,11 +1,19 @@
 from django.urls import path
+from django.conf.urls.static import static
 from . import views
 
 
 
 urlpatterns = [
     path('dashboard/', views.usuario_dashboard, name='usuario_dashboard'),
-    path('administrador/', views.administrador_menu, name='administrador_menu'),  # 👈 nueva ruta
     path('login/', views.login_view, name='login'),
     path('logout/', views.cerrar_sesion, name='logout'),
+    path('revision/', views.admin_revision_documentacion, name='admin_revision_documentacion'),
+    path('crear_usuario/', views.admin_crear_usuario, name='admin_crear_usuario'),
+    path('gestion_usuarios/', views.admin_gestion_usuarios, name='admin_gestion_usuarios'),
+    path('lista_usuarios/', views.admin_lista_usuarios, name='admin_lista_usuarios'),
+    path('eliminar_usuario/<int:usuario_id>/', views.admin_eliminar_usuario, name='eliminar_usuario'),
+    path('editar_usuario/<int:usuario_id>/', views.editar_usuario, name='admin_editar_usuario'),
+    path('perfil_admin', views.admin_perfil, name='admin_perfil'),
+    # buscar como añadir linea para enviar cualquier otra url a login
 ]

@@ -1,0 +1,17 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block title %}Crear usuario{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/admin_gestion_usuarios.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="menu-usuarios-admin">
+        <a href="{% url 'admin_crear_usuario' %}" class="boton-accion">Crear usuario</a>
+        <a href="{% url 'admin_lista_usuarios' %}" class="boton-accion">Lista de usuarios y contraseñas</a>
+    </div>
+
+{% endblock %}

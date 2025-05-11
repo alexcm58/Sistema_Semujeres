@@ -1,0 +1,76 @@
+/* General */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: white;
+}
+
+/* Barra superior */
+.barra-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 10px 30px;
+    border-bottom: 1px solid #ddd;
+}
+
+.barra-izquierda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-barra {
+    height: 45px;
+}
+
+.link-zacatecas {
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.barra-derecha a {
+    margin-left: 20px;
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Banner principal */
+.banner-modelo {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.logo-modelo-banner {
+    width: 80%;
+    max-width: 800px;
+}
+
+/* Footer */
+footer {
+    background-color: #541722;
+    color: white;
+    padding: 20px 30px;
+    text-align: center;
+}
+
+.footer-contenido {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-redes i {
+    margin: 0 10px;
+    font-size: 18px;
+}
+
+.footer-info p {
+    margin: 5px 0;
+    font-size: 13px;
+}
+

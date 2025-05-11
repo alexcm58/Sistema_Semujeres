@@ -2,7 +2,7 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background-color: #f9f9f9;
+    background-color: white;
 }
 
 /* Barra superior */
@@ -84,8 +84,9 @@ body {
 }
 
 .tabla-documentos th {
-    background-color: #eee;
+    background-color: #621d28;
     font-weight: bold;
+    color: white;
 }
 
 .tabla-documentos input[type="file"] {
@@ -149,4 +150,24 @@ footer {
 .footer-info p {
     margin: 5px 0;
     font-size: 13px;
+}
+.barra-contenedor {
+    width: 80%;
+    margin: 0 auto 30px auto;
+    text-align: center;
+}
+
+.barra-progreso {
+    width: 100%;
+    background-color: #eee;
+    border-radius: 10px;
+    height: 20px;
+    margin-top: 5px;
+}
+
+.barra-relleno {
+    background-color: #4CAF50;
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
 }
