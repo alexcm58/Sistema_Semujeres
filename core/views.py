@@ -32,7 +32,7 @@ def es_admin(user):
     return user.is_authenticated and user.rol == 'admin'
 
 @user_passes_test(es_admin)
-def admin_revision_documentacion(request):
+def admin_revision_documentacion(request, entidad_id=None):
     entidades = Usuario.objects.filter(rol='usuario')
     entidad_seleccionada = None
     documentos = []
@@ -56,7 +56,8 @@ def admin_revision_documentacion(request):
                     doc.estado = estado
                 doc.observaciones = observaciones
                 doc.save()
-            return redirect(f'{request.path}?entidad={entidad_id}')
+                entidad_id = user.id  # o el id del usuario que se desea revisar
+            return redirect('admin_revision_documentacion', entidad_id=entidad_id)
         
     if documentos:
         total = documentos.count()
@@ -119,9 +120,14 @@ def cerrar_sesion(request):
     logout(request)
     return redirect('login')  # nombre de la URL del login
 
+@user_passes_test(es_admin)
 def admin_gestion_usuarios(request):
-    return render(request, 'core/admin_gestion_usuarios.html')
+    usuarios = Usuario.objects.all()
+    return render(request, 'core/admin_gestion_usuarios.html', {
+        'entidades': usuarios,
+    })
 
+@user_passes_test(es_admin)
 def admin_lista_usuarios(request):
     usuarios = Usuario.objects.all()
 

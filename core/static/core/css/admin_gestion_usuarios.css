@@ -22,3 +22,93 @@
 .boton-accion:hover {
     background-color: #880e4f;
 }
+.contenedor {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  thead {
+    background-color: #621d28;
+    color: white;
+  }
+
+  th, td {
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  tbody tr:hover {
+    background-color: #e58585;
+  }
+
+  .sin-usuarios {
+    text-align: center;
+    font-style: italic;
+    color: #5c5b5b;
+  }
+
+  .btn-editar {
+    background-color: #621d28;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .btn-editar:hover {
+    background-color: #621d28;
+  }
+
+/* Modal, ventana emergente de confirmaación */
+  .modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 300px;
+}
+
+.btn-confirmar {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 12px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+}
+
+.btn-cancelar {
+    background-color: #7f8c8d;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+}

@@ -11,7 +11,67 @@
 
     <div class="menu-usuarios-admin">
         <a href="{% url 'admin_crear_usuario' %}" class="boton-accion">Crear usuario</a>
-        <a href="{% url 'admin_lista_usuarios' %}" class="boton-accion">Lista de usuarios y contraseñas</a>
     </div>
+
+    <div class="contenedor">
+        <h2>Lista de Usuarios</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre de Usuario</th>
+                <th>Entidad</th>
+                <th>Email</th>
+                <th>Rol</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for usuario in entidades %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.entidad_federativa }}</td>
+                    <td>{{ usuario.correo }}</td>
+                    <td>{{ usuario.rol }}</td>
+                    <td><a href="{% url 'admin_editar_usuario' usuario.id%}" class="btn-editar">Editar</a></td>
+                    <td>
+                        <button class="btn-eliminar" onclick="mostrarModal({{ usuario.id }}, '{{ usuario.username }}')">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+
+            {% empty %}
+                <tr>
+                    <td colspan="3" class="sin-usuarios">No hay usuarios registrados.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!--Modal ventana emergente tipo (pop - up)--->
+    <div id="modalConfirmacion" class="modal" style="display:none;">
+        <div class="modal-contenido">
+            <p id="mensajeModal">¿Deseas eliminar al usuario?</p>
+            <form id="formEliminar" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-confirmar">Sí, eliminar</button>
+                <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function mostrarModal(usuarioId, username) {
+            document.getElementById("mensajeModal").innerText = `¿Estás seguro de eliminar a "${username}"?`;
+            document.getElementById("formEliminar").action = `/eliminar_usuario/${usuarioId}/`;  // Asegúrate de que coincida con tu ruta
+            document.getElementById("modalConfirmacion").style.display = "block";
+        }
+        
+        function cerrarModal() {
+            document.getElementById("modalConfirmacion").style.display = "none";
+        }
+    </script>
+        
 
 {% endblock %}

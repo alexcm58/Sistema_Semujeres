@@ -31,12 +31,22 @@
     <main class="contenido">
         <h2>SUBIR DOCUMENTOS</h2>
         
-            <div class="barra-contenedor">
-                <p>Documentos validados: {{ porcentaje_validados }}%</p>
-                <div class="barra-progreso">
-                    <div class="barra-relleno" style="width:{{ porcentaje_validados }}%"></div>
+
+
+        <div class="barra-contenedor">
+            <p>Documentos validados: {{ porcentaje_validados }}%</p>
+            <div class="barra-progreso">
+                <div class="barra-relleno 
+                    {% if porcentaje_validados < 33 %}
+                        rojo
+                    {% elif porcentaje_validados < 66 %}
+                        amarillo
+                    {% else %}
+                        verde
+                    {% endif %}" style="width:{{ porcentaje_validados }}%">
                 </div>
             </div>
+        </div>
 
         <!-- Formulario para subir documentos -->
         <form method="post" enctype="multipart/form-data">
@@ -48,21 +58,27 @@
                         <th>Fecha de Subida</th>
                         <th colspan="2">Archivo</th>
                         <th>Nombre</th>
-                        <th>Estado</th>
                         <th>Observaciones</th>
+                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for doc in documentos %}
                     <tr>
                         <td>{{ doc.nombre_documento }}</td>
-                        <td>{{ doc.fecha_subida|date:"d-m-Y" }}</td>
+                        <td>
+                            {% if doc.archivo %}
+                                {{ doc.fecha_subida|date:"d-m-Y" }}
+                            {% else %}
+                                <!-- Celda vacía si no hay archivo -->
+                            {% endif %}
+                        </td>
                         <td colspan="2">
                             <input type="file" name="documento_{{ doc.id }}" {% if doc.archivo %} disabled {% endif %} accept=".pdf">
                         </td>
                         <td>{{ doc.archivo.name|cut:"documentos/"|cut:".pdf" }}</td>
-                        <td>{{ doc.get_estado_display }}</td>
                         <td>{{ doc.observaciones }}</td>
+                        <td>{{ doc.get_estado_display }}</td>
                     </tr>
                     {% empty %}
                     <tr>
