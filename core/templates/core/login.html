@@ -42,9 +42,21 @@
     </div>
 
     {% if error %}
-  <p style="color: red;">{{ error }}</p>
+<div id="toast-error" class="toast-error show">
+    ⚠️ {{ error }}
+</div>
+<script>
+    // Ocultar el toast después de 4 segundos
+    setTimeout(() => {
+        const toast = document.getElementById('toast-error');
+        if (toast) {
+            toast.classList.remove('show');
+        }
+    }, 4000);
+</script>
 {% endif %}
 
+    
 
     <footer>
         Secretaría de las Mujeres · Gobierno del Estado de Zacatecas · semujer@zacatecas.gob.mx

@@ -37,14 +37,14 @@
 
 .formulario-admin input:focus,
 .formulario-admin select:focus {
-    border-color: #880e4f;
+    border-color: #621d28;
     outline: none;
 }
 
 .boton-accion {
     width: 100%;
     padding: 12px;
-    background-color: #880e4f;
+    background-color: #621d28;
     color: white;
     font-size: 16px;
     border: none;
@@ -54,5 +54,5 @@
 }
 
 .boton-accion:hover {
-    background-color: #6a0d3b;
+    background-color: #621d28;
 }

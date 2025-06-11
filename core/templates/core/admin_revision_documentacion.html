@@ -8,7 +8,7 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h1>REVISIÓN DOCUMENTACIÓN</h1>
+    <h1>Revisión Documentación</h1>
     <p>Seleccione una entidad para validar su documentación</p>
 
     <form method="get">
@@ -51,7 +51,8 @@
                 <tbody>
                     {% for documento in documentos %}
                     <tr>
-                        <td>{{ documento.nombre_documento }}</td>
+                        <td>{{ documento.anexo.nombre }}</td>
+
                         <td>
                             {% if documento.archivo %}
                                 <a href="{{ documento.archivo.url }}" target="_blank">Vista</a>

@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls.static import static
 from . import views
-
+from django.shortcuts import redirect
 
 
 urlpatterns = [
@@ -15,5 +15,12 @@ urlpatterns = [
     path('eliminar_usuario/<int:usuario_id>/', views.admin_eliminar_usuario, name='eliminar_usuario'),
     path('editar_usuario/<int:usuario_id>/', views.editar_usuario, name='admin_editar_usuario'),
     path('perfil_admin', views.admin_perfil, name='admin_perfil'),
+    path('admin_anexos', views.admin_anexos, name='admin_anexos'),
+    path('admin/anexos/eliminar/<int:anexo_id>/', views.eliminar_anexo, name='eliminar_anexo'),
+
+
+
+     path('', lambda request: redirect('login')),
     # buscar como añadir linea para enviar cualquier otra url a login
 ]
+

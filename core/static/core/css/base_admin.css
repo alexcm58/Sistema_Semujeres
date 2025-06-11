@@ -61,7 +61,7 @@ footer {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 10px;
 }
 
 .footer-redes i {
@@ -74,3 +74,32 @@ footer {
     font-size: 13px;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estructura que empuja el footer hacia el fondo si no hay contenido */
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Asegura que el contenido empuje el footer */
+main {
+    flex: 1;
+}
+
+/* Estilo para el footer */
+.footer {
+    background-color: #621d28;
+    color: white;
+    text-align: center;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+    bottom: 0;
+}

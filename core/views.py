@@ -3,8 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
-from .models import Documento, DOCUMENTOS_REQUERIDOS, Usuario
+from .models import Documento, Usuario
 from .forms import CrearUsuarioForm, EditarUsuarioForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import user_passes_test
+from .models import AnexoRequerido, Documento
+from .forms import AnexoForm  # Asegúrate de tener este form
+from .models import Usuario  # Asegúrate de importar Usuario si lo necesitas
 
 
 def login_view(request):
@@ -87,12 +92,9 @@ def admin_crear_usuario(request):
         form = CrearUsuarioForm()
     return render(request, 'core/admin_crear_usuario.html', {'form': form})
 
+
 @login_required
 def usuario_dashboard(request):
-    # Asegurar que existen los documentos requeridos
-    for doc_nombre in DOCUMENTOS_REQUERIDOS:
-        Documento.objects.get_or_create(usuario=request.user, nombre_documento=doc_nombre)
-
     documentos = Documento.objects.filter(usuario=request.user)
 
     if request.method == 'POST':
@@ -102,17 +104,16 @@ def usuario_dashboard(request):
                 doc.archivo = archivo
                 doc.save()
 
-    if documentos:
-        total = documentos.count()
-        validados = documentos.filter(estado='validado').count()
-        porcentaje_validados = round((validados / total) * 100, 2) if total > 0 else 0
-    else:
-        porcentaje_validados = 0
-        
+    # Cálculo del porcentaje validado
+    total = documentos.count()
+    validados = documentos.filter(estado='validado').count()
+    porcentaje_validados = round((validados / total) * 100, 2) if total > 0 else 0
+
     return render(request, 'core/usuario_dashboard.html', {
         'documentos': documentos,
-        'porcentaje_validados': porcentaje_validados,   
-        })
+        'porcentaje_validados': porcentaje_validados,
+    })
+
 
 
 def cerrar_sesion(request):
@@ -180,3 +181,45 @@ def admin_perfil(request):
         'form': form,
         'usuario': usuario,
     })
+
+
+def es_admin(user):
+    return user.is_authenticated and user.rol == 'admin'
+
+from .models import Usuario, AnexoRequerido, Documento
+
+def sincronizar_documentos_por_usuario():
+    usuarios = Usuario.objects.all()
+    anexos = AnexoRequerido.objects.all()
+
+    for usuario in usuarios:
+        for anexo in anexos:
+            Documento.objects.get_or_create(usuario=usuario, anexo=anexo)
+
+def es_admin(user):
+    return user.is_authenticated and user.rol == 'admin'
+
+@user_passes_test(es_admin)
+def admin_anexos(request):
+    anexos = AnexoRequerido.objects.all().order_by('nombre')
+
+    if request.method == 'POST':
+        form = AnexoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            sincronizar_documentos_por_usuario()  # ⬅️ importante
+            return redirect('admin_anexos')
+    else:
+        form = AnexoForm()
+
+    return render(request, 'core/admin_anexos.html', {
+        'anexos': anexos,
+        'form': form,
+    })
+@user_passes_test(es_admin)
+def eliminar_anexo(request, anexo_id):
+    anexo = get_object_or_404(AnexoRequerido, id=anexo_id)
+    anexo.delete()
+    Documento.objects.filter(anexo=anexo).delete()  # Limpieza relacionada
+    return redirect('admin_anexos')
+

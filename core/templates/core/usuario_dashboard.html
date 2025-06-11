@@ -19,7 +19,6 @@
         <div class="barra-derecha">
             <a href="{% url 'logout' %}" class="boton-salir">SALIR</a>
         </div>
-        
     </div>
 
     <!-- Banner del Modelo -->
@@ -30,8 +29,6 @@
     <!-- Contenido principal -->
     <main class="contenido">
         <h2>SUBIR DOCUMENTOS</h2>
-        
-
 
         <div class="barra-contenedor">
             <p>Documentos validados: {{ porcentaje_validados }}%</p>
@@ -65,24 +62,30 @@
                 <tbody>
                     {% for doc in documentos %}
                     <tr>
-                        <td>{{ doc.nombre_documento }}</td>
+                        <td>{{ doc.anexo.nombre }}</td>
                         <td>
                             {% if doc.archivo %}
                                 {{ doc.fecha_subida|date:"d-m-Y" }}
-                            {% else %}
-                                <!-- Celda vacía si no hay archivo -->
                             {% endif %}
                         </td>
                         <td colspan="2">
-                            <input type="file" name="documento_{{ doc.id }}" {% if doc.archivo %} disabled {% endif %} accept=".pdf">
+                            {% if not doc.archivo %}
+                                <input type="file" name="documento_{{ doc.id }}" accept=".pdf">
+                            {% else %}
+                                <a href="{{ doc.archivo.url }}" target="_blank">Ver archivo</a>
+                            {% endif %}
                         </td>
-                        <td>{{ doc.archivo.name|cut:"documentos/"|cut:".pdf" }}</td>
-                        <td>{{ doc.observaciones }}</td>
+                        <td>
+                            {% if doc.archivo %}
+                                {{ doc.archivo.name|cut:"documentos/"|cut:".pdf" }}
+                            {% endif %}
+                        </td>
+                        <td>{{ doc.observaciones|default:"—" }}</td>
                         <td>{{ doc.get_estado_display }}</td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6">No hay documentos disponibles.</td>
+                        <td colspan="7">No hay documentos disponibles.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -91,7 +94,6 @@
             <div class="boton-subida">
                 <button type="submit">Subir Archivos Seleccionados</button>
             </div>
-            
         </form>
         
     </main>

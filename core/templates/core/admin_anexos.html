@@ -1,0 +1,65 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block title %}Administración de Documentos Requeridos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/admin_anexos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="contenedor-principal">
+
+    <h2 class="titulo-seccion titulo-centrado">Administración de Documentos Requeridos</h2>
+
+
+    <!-- Formulario para agregar -->
+    <div class="tarjeta-formulario">
+        <h4>Agregar nuevo documento requerido</h4>
+        <form method="post" class="formulario-anexo">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_nombre">Nombre:</label>
+                {{ form.nombre }}
+            </div>
+            <div class="form-group">
+                <label for="id_descripcion">Descripción:</label>
+                {{ form.descripcion }}
+            </div>
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </form>
+    </div>
+
+    <!-- Tabla con anexos -->
+    <div class="tabla-anexos mt-4">
+        <h4>Documentos actualmente requeridos</h4>
+        {% if anexos %}
+        <table class="tabla-estilo">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for anexo in anexos %}
+                <tr>
+                    <td>{{ anexo.nombre }}</td>
+                    <td>{{ anexo.descripcion|default:"—" }}</td>
+                    <td>
+                        <a href="{% url 'eliminar_anexo' anexo.id %}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('¿Estás seguro de eliminar este documento requerido?');">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay documentos registrados aún.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

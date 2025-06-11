@@ -88,7 +88,7 @@
 }
 
 .boton-subida button {
-    background-color: #541722;
+    background-color: #621d28;
     color: white;
     padding: 10px 30px;
     border: none;
@@ -98,7 +98,7 @@
 }
 
 .boton-subida button:hover {
-    background-color: #7a2432;
+    background-color: #621d28;
 }
 
 /* no tengo ni la menor idea*/
@@ -152,7 +152,7 @@ table th, table td {
 }
 
 table th {
-    background-color: #880e4f;
+    background-color: #621d28;
     color: #fff;
 }
 
@@ -160,7 +160,7 @@ button {
     display: block;
     margin: 30px auto 0;
     padding: 10px 30px;
-    background-color: #880e4f;
+    background-color: #621d28;
     color: white;
     border: none;
     border-radius: 5px;
@@ -169,7 +169,7 @@ button {
 }
 
 button:hover {
-    background-color: #6d0b3b;
+    background-color: #621d28;
 }
 .barra-contenedor {
     text-align: center;

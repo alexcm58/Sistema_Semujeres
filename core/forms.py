@@ -2,6 +2,7 @@
 
 from django import forms
 from .models import Usuario
+from .models import AnexoRequerido
 
 # forms.py
 
@@ -39,3 +40,14 @@ class EditarUsuarioForm(forms.ModelForm):
             'rol',
             'is_active',
         ]
+
+
+class AnexoForm(forms.ModelForm):
+    class Meta:
+        model = AnexoRequerido
+        fields = ['nombre', 'descripcion', 'obligatorio']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'obligatorio': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
