@@ -1,16 +1,19 @@
 {% extends 'core/base_admin.html' %}
 {% load static %}
 {% block title %}Revisión de documentación{% endblock %}
+
 {% block extra_css %}
-
 <link rel="stylesheet" href="{% static 'core/css/admin_revision_documentacion.css' %}">
-
 {% endblock %}
+
 {% block content %}
 <div class="container">
     <h1>Revisión Documentación</h1>
     <p>Seleccione una entidad para validar su documentación</p>
 
+    
+
+       
     <form method="get">
         <div class="entidad-section">
             <select name="entidad" onchange="this.form.submit()">
@@ -29,12 +32,12 @@
         {% csrf_token %}
 
         {% if entidad_seleccionada %}
-            <div class="barra-contenedor">
-                <p>Documentos validados: {{ porcentaje_validados }}%</p>
-                <div class="barra-progreso">
-                    <div class="barra-relleno" style="width:{{porcentaje_validados}}%"></div>
-                </div>
+        <div class="barra-contenedor">
+            <p>Documentos validados: {{ porcentaje_validados }}%</p>
+            <div class="barra-progreso">
+                <div class="barra-relleno" style="width:{{porcentaje_validados}}%"></div>
             </div>
+        </div>
         {% endif %}
 
         <div class="table-section">
@@ -52,7 +55,6 @@
                     {% for documento in documentos %}
                     <tr>
                         <td>{{ documento.anexo.nombre }}</td>
-
                         <td>
                             {% if documento.archivo %}
                                 <a href="{{ documento.archivo.url }}" target="_blank">Vista</a>
@@ -83,8 +85,26 @@
                 </tbody>
             </table>
         </div>
+
         <button type="submit">GUARDAR</button>
     </form>
     {% endif %}
+    
 </div>
+<!-- Botones de descarga de reportes -->
+<div class="reporte-botones" style="margin: 20px 0;">
+    <!-- Botón siempre visible: Reporte general trimestral -->
+    <form action="{% url 'reporte_general_pdf' %}" method="get" style="display:inline;">
+        <button type="submit" class="btn">📄 Descargar Reporte Trimestral General</button>
+    </form>
+ <!-- Botón visible solo cuando hay entidad seleccionada -->
+ {% if entidad_seleccionada %}
+ <form action="{% url 'reporte_entidad_pdf' entidad_seleccionada.id %}" method="get" style="display:inline;">
+     <button type="submit" class="btn">
+         📄 Descargar Reporte de {{ entidad_seleccionada.get_full_name|default:entidad_seleccionada.username }}
+     </button>
+ </form>
+ {% endif %}
+</div>
+
 {% endblock %}

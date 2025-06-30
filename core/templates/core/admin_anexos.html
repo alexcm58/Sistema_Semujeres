@@ -12,6 +12,8 @@
 
     <h2 class="titulo-seccion titulo-centrado">Administración de Documentos Requeridos</h2>
 
+    
+    
 
     <!-- Formulario para agregar -->
     <div class="tarjeta-formulario">
@@ -61,5 +63,19 @@
         <p>No hay documentos registrados aún.</p>
         {% endif %}
     </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="{% url 'eliminar_todos_anexos' %}" class="btn btn-danger btn-sm"
+           onclick="return confirm('¿Estás seguro de eliminar TODOS los documentos requeridos?');"
+           style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; margin: 10px; color: white; border-radius: 8px; text-decoration: none;">
+            🗑️ Eliminar todos los anexos
+        </a>
+    
+        <a href="{% url 'reporte_anexos_pdf' %}" class="btn btn-secondary btn-sm"
+           style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; margin: 10px; color: white; border-radius: 8px; text-decoration: none;">
+            📄 Generar reporte de anexos
+        </a>
+    </div>
 </div>
+
+
 {% endblock %}
