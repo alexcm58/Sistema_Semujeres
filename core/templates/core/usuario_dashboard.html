@@ -53,10 +53,10 @@
                     <tr>
                         <th>Documento</th>
                         <th>Fecha de Subida</th>
-                        <th colspan="2">Archivo</th>
                         <th>Nombre</th>
                         <th>Observaciones</th>
                         <th>Estado</th>
+                        <th colspan="2">Archivo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,20 +68,29 @@
                                 {{ doc.fecha_subida|date:"d-m-Y" }}
                             {% endif %}
                         </td>
-                        <td colspan="2">
-                            {% if not doc.archivo %}
-                                <input type="file" name="documento_{{ doc.id }}" accept=".pdf">
-                            {% else %}
-                                <a href="{{ doc.archivo.url }}" target="_blank">Ver archivo</a>
-                            {% endif %}
-                        </td>
+                        <!-- Nombre del archivo subido -->
                         <td>
                             {% if doc.archivo %}
                                 {{ doc.archivo.name|cut:"documentos/"|cut:".pdf" }}
                             {% endif %}
                         </td>
+                        <!-- observaciones -->
                         <td>{{ doc.observaciones|default:"—" }}</td>
+                        <!-- Estados -->
                         <td>{{ doc.get_estado_display }}</td>
+                        <!-- Archivo Botones -->
+                        <td colspan="2">
+                            {% if not doc.archivo %}
+                                <label for="archivo_{{ doc.id }}" class="upload-icon">
+                                    <img src="{% static 'core/img/arrow_upload.png' %}" alt="Subir archivo" width="24" height="24" />
+                                </label>
+                                <input type="file" id="archivo_{{ doc.id }}" name="documento_{{ doc.id }}" accept=".pdf" class="input-oculto">
+                            {% else %}
+                                <a href="{{ doc.archivo.url }}" target="_blank">
+                                    <img src="{% static 'core/img/visibility.png' %}" alt="Subir archivo" width="24" height="24" />
+                                </a>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>

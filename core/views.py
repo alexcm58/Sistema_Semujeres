@@ -50,11 +50,12 @@ def login_view(request):
 
     return render(request, 'core/login.html')
 
-
-
-
 def es_admin(user):
     return user.is_authenticated and user.rol == 'admin'
+
+def cerrar_sesion(request):
+    logout(request)
+    return redirect('login')  # nombre de la URL del login
 
 @user_passes_test(es_admin)
 def admin_revision_documentacion(request):
@@ -112,7 +113,6 @@ def admin_crear_usuario(request):
         form = CrearUsuarioForm()
     return render(request, 'core/admin_crear_usuario.html', {'form': form})
 
-
 @login_required
 def usuario_dashboard(request):
     documentos = Documento.objects.filter(usuario=request.user)
@@ -133,12 +133,6 @@ def usuario_dashboard(request):
         'documentos': documentos,
         'porcentaje_validados': porcentaje_validados,
     })
-
-
-
-def cerrar_sesion(request):
-    logout(request)
-    return redirect('login')  # nombre de la URL del login
 
 @user_passes_test(es_admin)
 def admin_gestion_usuarios(request):
@@ -167,7 +161,6 @@ def admin_eliminar_usuario(request, usuario_id):
     
     # En caso de acceso por GET (opcional, puede redirigir o lanzar error)
     return redirect('admin_lista_usuarios')
-
 
 @user_passes_test(es_admin)
 def editar_usuario(request, usuario_id):
@@ -202,12 +195,6 @@ def admin_perfil(request):
         'usuario': usuario,
     })
 
-
-def es_admin(user):
-    return user.is_authenticated and user.rol == 'admin'
-
-from .models import Usuario, AnexoRequerido, Documento
-
 def sincronizar_documentos_por_usuario():
     usuarios = Usuario.objects.all()
     anexos = AnexoRequerido.objects.all()
@@ -215,9 +202,6 @@ def sincronizar_documentos_por_usuario():
     for usuario in usuarios:
         for anexo in anexos:
             Documento.objects.get_or_create(usuario=usuario, anexo=anexo)
-
-def es_admin(user):
-    return user.is_authenticated and user.rol == 'admin'
 
 @user_passes_test(es_admin)
 def admin_anexos(request):
@@ -236,15 +220,13 @@ def admin_anexos(request):
         'anexos': anexos,
         'form': form,
     })
+
 @user_passes_test(es_admin)
 def eliminar_anexo(request, anexo_id):
     anexo = get_object_or_404(AnexoRequerido, id=anexo_id)
     anexo.delete()
     Documento.objects.filter(anexo=anexo).delete()  # Limpieza relacionada
     return redirect('admin_anexos')
-
-
-
 
 @user_passes_test(es_admin)
 def reporte_general_pdf(request):
@@ -375,19 +357,17 @@ def reporte_general_pdf(request):
 
     # 🖊️ PIE
     pie = Paragraph(
-        "Este reporte ha sido generado automáticamente por el Sistema de Seguimiento del Modelo para la Igualdad entre Mujeres y Hombres del Estado de Zacatecas.",
+        "Este reporte ha sido generado automáticamente por el Sistema de \"Seguimiento Secretaría de las Mujeres - Gestión y Revisión de Documentación\" Estado de Zacatecas.",
         ParagraphStyle('pie', fontSize=9, alignment=1, textColor=colors.grey)
     )
     elements.append(pie)
 
     pdf.build(elements)
     buffer.seek(0)
-    nombre_archivo = f"reporte_trimestral_{slugify(nombre_mes)}_{ahora.year}.pdf"
+    nombre_archivo = f"Reporte_General_Trimestral_{slugify(nombre_mes)}_{ahora.year}.pdf"
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     return response
-
-
 
 @user_passes_test(es_admin)
 def reporte_entidad_pdf(request, entidad_id):
@@ -470,7 +450,7 @@ def reporte_entidad_pdf(request, entidad_id):
 
     # 🖊️ PIE
     pie = Paragraph(
-        "Este reporte ha sido generado automáticamente por el Sistema de Seguimiento del Modelo para la Igualdad entre Mujeres y Hombres del Estado de Zacatecas.",
+        "Este reporte ha sido generado automáticamente por el Sistema de \"Seguimiento Secretaría de las Mujeres - Gestión y Revisión de Documentación\" Estado de Zacatecas.",
         ParagraphStyle('pie', fontSize=9, alignment=1, textColor=colors.grey)
     )
     elements.append(pie)
@@ -478,11 +458,10 @@ def reporte_entidad_pdf(request, entidad_id):
     # FINAL
     pdf.build(elements)
     buffer.seek(0)
-    nombre_archivo = f"reporte_{slugify(nombre_entidad)}.pdf"
+    nombre_archivo = f"reporte_entidad_{(entidad)}_{ahora.year}.pdf"
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     return response
-
 
 @user_passes_test(es_admin)
 def eliminar_todos_anexos(request):
@@ -490,8 +469,8 @@ def eliminar_todos_anexos(request):
     messages.success(request, "Todos los anexos han sido eliminados.")
     return redirect('admin_anexos')
 
+@user_passes_test(es_admin)
 def reporte_anexos_pdf(request):
-
 
     # 1. Obtener datos reales desde el modelo AnexoRequerido y Documento
     anexos = AnexoRequerido.objects.all()
@@ -510,6 +489,10 @@ def reporte_anexos_pdf(request):
     pdf = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
     elements = []
+
+    ahora = datetime.now()
+    nombre_mes = ahora.strftime("%B").capitalize()
+    fecha_str = ahora.strftime("%d de %B de %Y")
 
     fecha_str = datetime.now().strftime("%d de %B de %Y")
     elements.append(Paragraph("📄 Reporte de Cumplimiento de Anexos", styles['Title']))
@@ -557,6 +540,7 @@ def reporte_anexos_pdf(request):
     # 6. Finalizar PDF
     pdf.build(elements)
     buffer.seek(0)
+    nombre_archivo = f"Reporte_Anexos_{slugify(nombre_mes)}_{ahora.year}.pdf"
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="reporte_anexos.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     return response

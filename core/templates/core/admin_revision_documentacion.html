@@ -45,41 +45,49 @@
                 <thead>
                     <tr>
                         <th>Documento</th>
-                        <th>Vista Previa</th>
-                        <th>Validar Estado</th>
-                        <th>Descargar</th>
                         <th>Observaciones</th>
+                        <th>Validar Estado</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for documento in documentos %}
                     <tr>
+                        <!-- Nombre de los Anexos -->
                         <td>{{ documento.anexo.nombre }}</td>
+                        <!-- Observaciones -->
                         <td>
-                            {% if documento.archivo %}
-                                <a href="{{ documento.archivo.url }}" target="_blank">Vista</a>
-                            {% else %}
-                                No subido
-                            {% endif %}
+                            <textarea name="observaciones_{{ documento.id }}">{{ documento.observaciones }}</textarea>
+                            <input type="hidden" name="documento_id" value="{{ documento.id }}">
                         </td>
+                        <!-- Validación -->
                         <td>
                             <select name="estado_{{ documento.id }}">
                                 <option value="pendiente" {% if documento.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
                                 <option value="validado" {% if documento.estado == 'validado' %}selected{% endif %}>Validado</option>
                                 <option value="rechazado" {% if documento.estado == 'rechazado' %}selected{% endif %}>Rechazado</option>
                             </select>
+
                         </td>
+                        <!-- Botones -->
                         <td>
                             {% if documento.archivo %}
-                                <a href="{{ documento.archivo.url }}" download>Descargar</a>
+                            <div class="icon-container">
+                                <!-- Icono descarga -->
+                                <a href="{{ documento.archivo.url }}" download title="Descargar">
+                                    <img src="{% static 'core/img/download.png' %}" alt="Descargar" width="24" height="24" />
+                                </a>
+
+                                <!-- Icono vista previa -->
+                                <a href="{{ documento.archivo.url }}" target="_blank" title="Vista previa">
+                                    <img src="{% static 'core/img/visibility.png' %}" alt="Vista previa" width="24" height="24" />
+                                </a>
+                            </div>
                             {% else %}
-                                -
+                                
                             {% endif %}
                         </td>
-                        <td>
-                            <textarea name="observaciones_{{ documento.id }}">{{ documento.observaciones }}</textarea>
-                            <input type="hidden" name="documento_id" value="{{ documento.id }}">
-                        </td>
+
                     </tr>
                     {% endfor %}
                 </tbody>

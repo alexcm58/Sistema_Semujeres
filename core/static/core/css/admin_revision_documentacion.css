@@ -1,28 +1,28 @@
 /* Contenido principal */
-.contenido-principal {
-    max-width: 1000px;
+.contenido-principal, .container {
+    max-width: 1100px;
     margin: 30px auto;
-    padding: 20px;
+    padding: 20px 30px;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     text-align: center;
 }
 
-.contenido-principal h1 {
+.contenido-principal h1, h1 {
     font-size: 28px;
     color: #541722;
-    margin-bottom: 10px;
-}
-
-.contenido-principal p {
-    color: #555;
-    font-size: 16px;
     margin-bottom: 20px;
 }
 
+.contenido-principal p, p {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 40px;
+}
+
 /* Selector de entidad */
-.selector-entidad {
+.selector-entidad, .entidad-section select {
     padding: 10px 15px;
     font-size: 16px;
     border: 1px solid #ddd;
@@ -32,13 +32,18 @@
     margin-bottom: 20px;
 }
 
+.entidad-section {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
 /* Tabla */
-.contenedor-tabla {
+.contenedor-tabla, .table-section {
     overflow-x: auto;
     margin-bottom: 30px;
 }
 
-.tabla-documentos {
+.tabla-documentos, table {
     width: 100%;
     margin: 0 auto;
     border-collapse: collapse;
@@ -46,135 +51,65 @@
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
-.tabla-documentos th,
-.tabla-documentos td {
+.tabla-documentos th, .tabla-documentos td, table th, table td {
     border: 1px solid #ddd;
-    padding: 10px;
+    padding: 12px 15px;
     text-align: center;
     font-size: 14px;
+    white-space: nowrap; /* evita que se parta texto */
 }
-
-.tabla-documentos th {
-    background-color: #f0f0f0;
-    font-weight: bold;
-    color: #333;
+/* Anexos: columna 1 */
+table td:nth-child(1),
+table th:nth-child(1) {
+    width: 100px;
 }
-
-.tabla-documentos input[type="file"] {
+/* Validar Estado: columna 3 */
+table td:nth-child(3),
+table th:nth-child(3) {
     width: 140px;
 }
 
-/* Estado */
-.estado {
-    font-size: 18px;
+/* Acciones: columna 4 (o 5 si mantuviste la columna Vista) */
+table td:nth-child(4),
+table th:nth-child(4) {
+    width: 100px;
+}
+
+
+.tabla-documentos th, table th {
+    background-color: #621d28;
     font-weight: bold;
-}
-
-.estado.aprobado {
-    color: green;
-}
-
-.estado.pendiente {
-    color: goldenrod;
-}
-
-.estado.rechazado {
-    color: red;
-}
-
-/* Botón */
-.boton-subida {
-    margin-top: 20px;
-}
-
-.boton-subida button {
-    background-color: #621d28;
-    color: white;
-    padding: 10px 30px;
-    border: none;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.boton-subida button:hover {
-    background-color: #621d28;
-}
-
-/* no tengo ni la menor idea*/
-
-.container {
-    max-width: 1100px;
-    margin: 40px auto;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 28px;
-    color: #333;
-}
-
-p {
-    text-align: center;
-    color: #777;
-    margin-bottom: 40px;
-}
-
-.entidad-section {
-    text-align: center;
-    margin-bottom: 50px;
-}
-
-.entidad-section div {
-    margin: 10px 0;
-    font-size: 18px;
-}
-
-.table-section {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table th, table td {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    text-align: center;
-}
-
-table th {
-    background-color: #621d28;
     color: #fff;
 }
 
-button {
-    display: block;
-    margin: 30px auto 0;
-    padding: 10px 30px;
-    background-color: #621d28;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
+/* Botones */
+.boton-subida {
+    margin-top: 20px;
+    text-align: center;
 }
 
-button:hover {
+.boton-subida button, button {
     background-color: #621d28;
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    margin: 30px auto 0;
 }
+
+.boton-subida button:hover, button:hover {
+    background-color: #8b2c3a; /* rojo más claro */
+}
+
+/* Barra de progreso */
 .barra-contenedor {
     text-align: center;
     margin: 20px auto;
-    width: 60%; /* Puedes ajustar este valor */
+    width: 60%; /* Ajusta según necesidad */
 }
 
 .barra-progreso {
@@ -191,4 +126,96 @@ button:hover {
     background-color: #4CAF50;
     width: 0%;
     transition: width 0.4s ease;
+}
+
+/* Estados */
+.estado {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.estado.aprobado {
+    color: rgb(0, 128, 0);
+}
+
+.estado.pendiente {
+    color: goldenrod;
+}
+
+.estado.rechazado {
+    color: red;
+}
+
+/* Inputs textarea y selects */
+select {
+    cursor: text;
+    font-size: 14px;
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+table td textarea {
+    width: 100%;               /* Ocupa todo el ancho de la celda */
+    min-height: 90px;          /* Más alto por defecto */
+    padding: 10px 12px;        /* Espacio interno más amplio */
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;          /* Permite agrandarlo si se necesita */
+    line-height: 1.5;
+    background-color: #fdfdfd;
+}
+
+/* Enfocado */
+table td textarea:focus {
+    border-color: #621d28;
+    outline: none;
+    box-shadow: 0 0 3px rgba(98, 29, 40, 0.3);
+}
+
+/* Asegura alineación vertical al centro en todas las celdas */
+table td {
+    vertical-align: middle;
+}
+
+
+/* Iconos de descarga y vista previa juntos */
+.icon-container {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-container a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.icon-container a:hover {
+    color: #007bff;
+    cursor: pointer;
+}
+
+.icon-container img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* Responsividad para tablas */
+@media (max-width: 600px) {
+    .table-section, .contenedor-tabla {
+        overflow-x: scroll;
+    }
+    table, .tabla-documentos {
+        min-width: 600px;
+    }
 }

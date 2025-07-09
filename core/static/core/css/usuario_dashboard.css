@@ -74,7 +74,11 @@ body {
     background-color: white;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
-
+/* Observaciones: columna 4 */ 
+table td:nth-child(4),
+table th:nth-child(4) {
+    width: 600px;
+}
 .tabla-documentos th,
 .tabla-documentos td {
     border: 1px solid #ddd;
@@ -92,6 +96,20 @@ body {
 .tabla-documentos input[type="file"] {
     width: 140px;
 }
+.input-oculto {
+    display: none;
+}
+
+.upload-icon {
+    cursor: pointer;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.upload-icon:hover {
+    transform: scale(1.1);
+}
+
 
 /* Estado */
 .estado {
