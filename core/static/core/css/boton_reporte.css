@@ -1,0 +1,37 @@
+/* Contenedor de botones */
+.btn-container {
+    display: flex;
+    justify-content: flex-end; /* Mueve el contenido a la derecha */
+    width: 100%;
+    margin: 20px 0;
+}
+
+/* Botón general */
+.btn-reporte button {
+    background-color: #621d28;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-reporte button:hover {
+    background-color: #621d28;
+}
+
+/* Botón de entidad */
+.btn-entidad button {
+    background-color: #621d28;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-entidad button:hover {
+    background-color: #621d28;
+}
