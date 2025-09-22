@@ -37,8 +37,9 @@
             <button type="submit">Iniciar sesión</button>
         </form>        
         <div class="links">
-            <a href="#">¿Olvidaste tu contraseña?</a>
+            <a href="{% url 'olvido_contrasena' %}">¿Olvidaste tu contraseña?</a>
         </div>
+
     </div>
 
     {% if error %}
@@ -58,9 +59,35 @@
 
     
 
+    <!-- Footer -->
     <footer>
-        Secretaría de las Mujeres · Gobierno del Estado de Zacatecas · semujer@zacatecas.gob.mx
+        <div class="footer-contenido">
+            <!-- Bloque equipo -->
+            <div class="footer-equipo">
+                <h3>EQUIPO</h3>
+                <ul>
+                    <li>Jesús Alberto Rodríguez Valencia</li>
+                    <li>Alejandro Chávez Murillo</li>
+                    <li>Karla Guadalupe Rocha Quezada</li>
+                </ul>
+            </div>
+
+            <!-- Bloque contacto -->
+            <div class="footer-info">
+                <h3>CONTACTO</h3>
+                <p>Ciudad Administrativa · Edificio K Piso 1</p>
+                <p>Oficina Cerro del Gato, CP 98160, Zacatecas</p>
+                <p>452 491 50 00 Ext. 45239</p>
+                <p>semujer@zacatecas.gob.mx</p>
+                <p>Lunes a Viernes de 8:30 a 16:00 horas</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Gobierno del Estado de Zacatecas - Todos los derechos reservados</p>
+        </div>
     </footer>
+
 </body>
 </html>
 

@@ -31,6 +31,9 @@ import pandas as pd
 from reportlab.platypus import Image as RLImage
 from reportlab.platypus import KeepTogether
 
+# Para recuperación de contraseña
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
 
 def login_view(request):
     if request.method == 'POST':
@@ -1664,3 +1667,29 @@ def reporte_anexos_pdf(request):
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     return response
+
+#Recuperción de contraseña
+
+def olvido_contrasena(request):
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip()  # Quitamos espacios
+
+        if not email:
+            # Validación si no ingresa correo
+            messages.error(request, "Por favor, ingresa un correo válido.")
+            return redirect("olvido_contrasena")
+
+        # Aquí mandas un correo al administrador avisando
+        send_mail(
+            subject="Solicitud de recuperación de contraseña",
+            message=f"El usuario con correo {email} solicitó recuperar su contraseña.",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=["tu_correo_admin@gmail.com"],  # <-- cambia por el correo del admin
+            fail_silently=False,
+        )
+        
+        # Mensaje de éxito
+        messages.success(request, "Se ha enviado tu solicitud al administrador.")
+        return redirect("olvido_contrasena")  # o a otra página que quieras
+
+    return render(request, "core/olvido_contrasena.html")

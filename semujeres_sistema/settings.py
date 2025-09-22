@@ -132,3 +132,13 @@ LOGOUT_REDIRECT_URL = '/login/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Configuración de correo (SMTP con Gmail)
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "rochakarla170112001@gmail.com"   # <-- pon tu Gmail aquí
+EMAIL_HOST_PASSWORD = "ueyi vrux rihl eekz"        # <-- pon tu contraseña o app password aquí
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

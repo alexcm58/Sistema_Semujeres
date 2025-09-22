@@ -17,11 +17,12 @@ urlpatterns = [
     path('perfil_admin', views.admin_perfil, name='admin_perfil'),
     path('admin_anexos', views.admin_anexos, name='admin_anexos'),
     path('admin/anexos/eliminar/<int:anexo_id>/', views.eliminar_anexo, name='eliminar_anexo'),
-    # En urls.py
-path('reporte/general/pdf/', views.reporte_general_pdf, name='reporte_general_pdf'),
-path('reporte/entidad/<int:entidad_id>/pdf/', views.reporte_entidad_pdf, name='reporte_entidad_pdf'),
-path('anexos/eliminar_todos/', views.eliminar_todos_anexos, name='eliminar_todos_anexos'),
-path('anexos/reporte_pdf/', views.reporte_anexos_pdf, name='reporte_anexos_pdf'),
+    path('reporte/general/pdf/', views.reporte_general_pdf, name='reporte_general_pdf'),
+    path('reporte/entidad/<int:entidad_id>/pdf/', views.reporte_entidad_pdf, name='reporte_entidad_pdf'),
+    path('anexos/eliminar_todos/', views.eliminar_todos_anexos, name='eliminar_todos_anexos'),
+    path('anexos/reporte_pdf/', views.reporte_anexos_pdf, name='reporte_anexos_pdf'),
+    path('olvido_contrasena/', views.olvido_contrasena, name='olvido_contrasena'),
+
 
 
 
