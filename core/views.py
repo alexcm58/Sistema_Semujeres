@@ -11,13 +11,14 @@ from django.utils.text import slugify
 from django.core.files.storage import default_storage
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
+from django.core.files.base import ContentFile
 
 # --------------------
 # Modelos y formularios del proyecto
 # --------------------
 from .models import Documento, Usuario, AnexoRequerido, AnexoHistorico
 from .forms import CrearUsuarioForm, EditarUsuarioForm, AnexoForm
-
+from .models import AnexoRequerido
 # --------------------
 # Python estándar
 # --------------------
@@ -564,52 +565,20 @@ def admin_anexos(request):
 
 @user_passes_test(es_admin)
 def eliminar_anexo(request, anexo_id):
+    try:
+        anexo = AnexoRequerido.objects.get(id=anexo_id)
+        anexo.delete()
+        messages.success(request, "El anexo fue eliminado correctamente.")
+    except AnexoRequerido.DoesNotExist:
+        messages.error(request, "El anexo no existe.")
+    return redirect('admin_anexos')
+
 
 @user_passes_test(es_admin)
 def eliminar_todos_anexos(request):
     AnexoRequerido.objects.all().delete()
     messages.success(request, "Todos los anexos han sido eliminados.")
     return redirect('admin_anexos')
-
-# Opción 1: Solo limpiar
-@user_passes_test(es_admin)
-def limpiar_anexos_subidos(request):
-    anexos = AnexoUsuario.objects.all()
-    for anexo in anexos:
-        if anexo.archivo:
-            anexo.archivo.delete(save=False)  # elimina el archivo físico
-            anexo.archivo = None
-            anexo.estado = 'pendiente'
-            anexo.observaciones = ''
-            anexo.save()
-    messages.success(request, "Los archivos subidos han sido limpiados para el nuevo trimestre.")
-    return redirect('admin_anexos')
-
-
-# Opción 2: Respaldar y limpiar
-@user_passes_test(es_admin)
-def respaldar_y_limpiar_anexos(request):
-    trimestre_actual = f"{now().year}-Q{((now().month-1)//3)+1}"
-    anexos = AnexoUsuario.objects.all()
-
-    for anexo in anexos:
-        if anexo.archivo:
-            # Guardar en histórico
-            AnexoHistorico.objects.create(
-                entidad=anexo.entidad,
-                anexo_requerido=anexo.anexo_requerido,
-                archivo=anexo.archivo,
-                trimestre=trimestre_actual
-            )
-            # Limpiar en el registro actual
-            anexo.archivo = None
-            anexo.estado = 'pendiente'
-            anexo.observaciones = ''
-            anexo.save()
-    messages.success(request, "Los archivos fueron respaldados y limpiados para el nuevo trimestre.")
-    return redirect('admin_anexos')
-
-
 
 @user_passes_test(es_admin)
 def limpiar_anexos_subidos(request):
@@ -642,17 +611,21 @@ def respaldar_anexos(request):
 
         for doc in documentos:
             if doc.archivo:
-                # Evitar respaldar si ya existe en histórico
+                # Evitar respaldar si ya existe un respaldo con mismo nombre y entidad
+                nombre_archivo = doc.archivo.name.split('/')[-1]
                 existe = AnexoHistorico.objects.filter(
                     entidad=doc.usuario,
                     anexo_requerido=doc.anexo,
-                    archivo=doc.archivo
+                    archivo__endswith=nombre_archivo
                 ).exists()
+
                 if not existe:
+                    # Crear copia física en histórico con nombre
+                    contenido = ContentFile(doc.archivo.read(), name=nombre_archivo)
                     AnexoHistorico.objects.create(
                         entidad=doc.usuario,
                         anexo_requerido=doc.anexo,
-                        archivo=doc.archivo
+                        archivo=contenido
                     )
                     respaldados += 1
 
@@ -662,6 +635,7 @@ def respaldar_anexos(request):
             messages.info(request, "ℹ️ No había archivos nuevos para respaldar.")
         return redirect('admin_anexos')
     return redirect('admin_anexos')
+
 
 # Generar reporte de anexos
 @user_passes_test(es_admin)
@@ -728,7 +702,6 @@ def vista_respaldo_anexos(request):
     respaldos = AnexoHistorico.objects.all().order_by('-fecha_subida')
     return render(request, 'core/respaldo_anexos.html', {'respaldos': respaldos})
 
-
 @user_passes_test(es_admin)
 def limpiar_respaldo(request):
     if request.method == 'POST':
@@ -744,10 +717,10 @@ def limpiar_respaldo(request):
             if r.archivo and default_storage.exists(r.archivo.name):
                 default_storage.delete(r.archivo.name)
 
-        # Eliminar registros de la base
+        # Eliminar registros de la tabla
         respaldos.delete()
 
-        messages.success(request, f"✅ Se han eliminado {count} archivos respaldados correctamente.")
+        messages.success(request, f"✅ Se han eliminado {count} archivos y registros de respaldo correctamente.")
         return redirect('vista_respaldo_anexos')
     return redirect('vista_respaldo_anexos')
 
@@ -759,17 +732,18 @@ def descargar_respaldo_zip(request):
         messages.info(request, "ℹ️ No hay archivos respaldados para descargar.")
         return redirect('vista_respaldo_anexos')
 
-    # Crear buffer en memoria
     buffer = BytesIO()
 
     with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
         for r in respaldos:
             if r.archivo and default_storage.exists(r.archivo.name):
+                # Obtener nombre original del archivo
                 nombre = f"{r.entidad.username}_{r.anexo_requerido.nombre}_{r.fecha_subida.strftime('%Y%m%d_%H%M%S')}"
                 ext = r.archivo.name.split('.')[-1]
                 nombre_archivo_zip = f"{nombre}.{ext}"
 
-                with default_storage.open(r.archivo.name, 'rb') as f:
+                # Abrir el archivo físico y escribirlo en el ZIP
+                with r.archivo.open('rb') as f:
                     zip_file.writestr(nombre_archivo_zip, f.read())
 
     buffer.seek(0)
