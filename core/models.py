@@ -64,8 +64,14 @@ class AnexoHistorico(models.Model):
     anexo_requerido = models.ForeignKey('AnexoRequerido', on_delete=models.CASCADE)
     archivo = models.FileField(upload_to='anexos_historicos/')
     fecha_subida = models.DateTimeField(auto_now_add=True)
-    trimestre = models.CharField(max_length=20)  # Ej: "2025-Q3"
+
+
+class AnexoUsuario(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    anexo_requerido = models.ForeignKey(AnexoRequerido, on_delete=models.CASCADE)
+    archivo = models.FileField(upload_to='anexos/', null=True, blank=True)
+    estado = models.CharField(max_length=20, default='pendiente')
+    observaciones = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.entidad} - {self.anexo_requerido} ({self.trimestre})"
-
+        return f"{self.usuario} - {self.anexo_requerido}"

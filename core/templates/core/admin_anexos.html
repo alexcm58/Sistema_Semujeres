@@ -5,12 +5,56 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'core/css/admin_anexos.css' %}">
+<style>
+/* Toast centrado y estilizado */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 300px;
+    max-width: 90%;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: #fff;
+    z-index: 9999;
+    opacity: 0.95;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+.toast-success { background-color: #621d28; }
+.toast-error   { background-color: #dc3545; }
+.toast-warning { background-color: #ffc107; color: #000; }
+.toast-info    { background-color: #17a2b8; }
+
+.toast .cerrar {
+    margin-left: 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="contenedor-principal">
 
     <h2 class="titulo-seccion titulo-centrado">Administración de Documentos Requeridos</h2>
+
+    <!-- Contenedor de toasts -->
+    <div id="toast-container">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="toast toast-{{ message.tags }}">
+                {{ message }}
+                <span class="cerrar" onclick="this.parentElement.style.display='none';">&times;</span>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 
     <!-- Formulario para agregar -->
     <div class="tarjeta-formulario">
@@ -29,7 +73,7 @@
         </form>
     </div>
 
-    <!-- Tabla con anexos -->
+    <!-- Tabla de anexos -->
     <div class="tabla-anexos mt-4">
         <h4>Documentos actualmente requeridos</h4>
         {% if anexos %}
@@ -61,40 +105,47 @@
         {% endif %}
     </div>
 
-    <!-- Contenedor de botones centrados -->
+    <!-- Botones de acciones -->
     <div class="contenedor-botones" style="display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+
         <!-- Limpiar anexos subidos -->
         <form method="post" action="{% url 'limpiar_anexos' %}">
             {% csrf_token %}
             <button type="submit" class="btn btn-warning btn-sm"
-                onclick="return confirm('¿Seguro que deseas limpiar todos los archivos subidos por las entidades?');"
-                style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px;">
+                style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px;"
+                onclick="return confirm('¿Seguro que deseas limpiar todos los archivos subidos por las entidades?');">
                 🔄 Limpiar anexos subidos
             </button>
         </form>
 
-        <!-- Respaldar y limpiar anexos -->
-        <form method="post" action="{% url 'respaldar_limpiar_anexos' %}">
+        <!-- Respaldar anexos -->
+        <form method="post" action="{% url 'respaldar_anexos' %}">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger btn-sm"
-                onclick="return confirm('¿Seguro que deseas respaldar y limpiar los archivos subidos?');"
-                style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px;">
-                📦 Respaldar y limpiar anexos
+                style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px;"
+                onclick="return confirm('¿Seguro que deseas respaldar los archivos subidos?');">
+                📦 Respaldar anexos
             </button>
         </form>
 
-        <!-- Generar reporte de anexos -->
-        <a href="{% url 'reporte_anexos_pdf' %}" class="btn btn-secondary btn-sm"
-           style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px; text-decoration: none;">
-            📄 Generar reporte de anexos
-        </a>
 
         <!-- Ver anexos respaldados -->
         <a href="{% url 'vista_respaldo_anexos' %}" class="btn btn-info btn-sm"
            style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px; text-decoration: none;">
             🗂 Ver anexos respaldados
         </a>
+
     </div>
 
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Ocultar automáticamente los toasts después de 5 segundos
+setTimeout(() => {
+    const toasts = document.querySelectorAll('.toast');
+    toasts.forEach(t => t.remove());
+}, 5000);
+</script>
 {% endblock %}

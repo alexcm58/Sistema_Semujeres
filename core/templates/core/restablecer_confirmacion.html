@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Correo Enviado</title>
+    <link rel="stylesheet" href="{% static 'core/css/login.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Se ha enviado un enlace de recuperación a: {{ rochakarla170112001@gmail.com }}</h2>
+        <p>Si el correo existe en nuestro sistema, recibirás instrucciones para restablecer tu contraseña.</p>
+        <a href="{% url 'login' %}">Volver al inicio de sesión</a>
+    </div>
+</body>
+</html>

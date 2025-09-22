@@ -22,15 +22,17 @@ urlpatterns = [
     # Administración de anexos
     path('admin_anexos/', views.admin_anexos, name='admin_anexos'),
     path('admin/anexos/eliminar/<int:anexo_id>/', views.eliminar_anexo, name='eliminar_anexo'),
-    path('anexos/eliminar_todos/', views.eliminar_todos_anexos, name='eliminar_todos_anexos'),
-    path('anexos/reporte_pdf/', views.reporte_anexos_pdf, name='reporte_anexos_pdf'),
-    path('limpiar-anexos/', views.limpiar_anexos_subidos, name='limpiar_anexos'),
-    path('respaldar-limpiar-anexos/', views.respaldar_y_limpiar_anexos, name='respaldar_limpiar_anexos'),
-    path('respaldo-anexos/', views.vista_respaldo_anexos, name='vista_respaldo_anexos'),
-
-    # Reportes
     path('reporte/general/pdf/', views.reporte_general_pdf, name='reporte_general_pdf'),
     path('reporte/entidad/<int:entidad_id>/pdf/', views.reporte_entidad_pdf, name='reporte_entidad_pdf'),
+    path('anexos/eliminar_todos/', views.eliminar_todos_anexos, name='eliminar_todos_anexos'),
+    path('anexos/reporte_pdf/', views.reporte_anexos_pdf, name='reporte_anexos_pdf'),
+    path('olvido_contrasena/', views.olvido_contrasena, name='olvido_contrasena'),
+    path('limpiar_anexos/', views.limpiar_anexos_subidos, name='limpiar_anexos'),
+    path('respaldar_anexos/', views.respaldar_anexos, name='respaldar_anexos'),
+    path('reporte_anexos_pdf/', views.reporte_anexos_pdf, name='reporte_anexos_pdf'),
+    path('vista_respaldo_anexos/', views.vista_respaldo_anexos, name='vista_respaldo_anexos'),
+    path('limpiar_respaldo/', views.limpiar_respaldo, name='limpiar_respaldo'),
+    path('descargar_respaldo_zip/', views.descargar_respaldo_zip, name='descargar_respaldo_zip'),
 
 
     # Redireccionamiento por defecto

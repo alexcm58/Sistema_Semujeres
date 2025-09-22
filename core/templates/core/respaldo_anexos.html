@@ -1,45 +1,142 @@
 {% extends 'core/base_admin.html' %}
 {% load static %}
 
-{% block title %}Respaldos de Anexos{% endblock %}
+{% block title %}Anexos Respaldados{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'core/css/admin_anexos.css' %}">
+<style>
+/* Botones centrados adicionales */
+.contenedor-botones-respaldo {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+.btn-respaldo {
+    background-color: #621d28;
+    border-color: #621d28;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* Toast centrado y estilizado */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 300px;
+    max-width: 90%;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: #fff;
+    z-index: 9999;
+    opacity: 0.95;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+.toast-success { background-color: #621d28; }
+.toast-error   { background-color: #dc3545; }
+.toast-warning { background-color: #ffc107; color: #000; }
+.toast-info    { background-color: #17a2b8; }
+
+.toast .cerrar {
+    margin-left: 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="contenedor-principal">
+
     <h2 class="titulo-seccion titulo-centrado">Anexos Respaldados</h2>
 
-    {% if respaldos %}
-    <table class="tabla-estilo">
-        <thead>
-            <tr>
-                <th>Entidad</th>
-                <th>Documento</th>
-                <th>Trimestre</th>
-                <th>Archivo</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for respaldo in respaldos %}
-            <tr>
-                <td>{{ respaldo.entidad }}</td>
-                <td>{{ respaldo.anexo_requerido }}</td>
-                <td>{{ respaldo.trimestre }}</td>
-                <td>
-                    {% if respaldo.archivo %}
-                    <a href="{{ respaldo.archivo.url }}" target="_blank">Descargar</a>
-                    {% else %}
-                    —
-                    {% endif %}
-                </td>
-            </tr>
+    <!-- Contenedor de toasts -->
+    <div id="toast-container">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="toast toast-{{ message.tags }}">
+                {{ message }}
+                <span class="cerrar" onclick="this.parentElement.style.display='none';">&times;</span>
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No hay anexos respaldados aún.</p>
-    {% endif %}
+        {% endif %}
+    </div>
+
+    <!-- Tabla con anexos respaldados -->
+    <div class="tabla-anexos mt-4">
+        <h4>Documentos respaldados</h4>
+        {% if respaldos %}
+        <table class="tabla-estilo">
+            <thead>
+                <tr>
+                    <th>Entidad</th>
+                    <th>Documento</th>
+                    <th>Fecha de Respaldo</th>
+                    <th>Archivo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in respaldos %}
+                <tr>
+                    <td>{{ r.entidad.username }}</td>
+                    <td>{{ r.anexo_requerido.nombre }}</td>
+                    <td>{{ r.fecha_subida|date:"d-m-Y H:i" }}</td>
+                    <td>
+                        {% if r.archivo %}
+                        <a href="{{ r.archivo.url }}" class="btn btn-sm btn-primary" download>
+                            Descargar
+                        </a>
+                        {% else %}
+                        —
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay anexos respaldados aún.</p>
+        {% endif %}
+    </div>
+
+    <!-- Botones de acción centrados -->
+    <div class="contenedor-botones-respaldo">
+        <!-- Limpiar respaldo -->
+        <form method="post" action="{% url 'limpiar_respaldo' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-respaldo"
+                onclick="return confirm('¿Seguro que deseas limpiar todos los respaldos de anexos?');">
+                🗑 Limpiar respaldos
+            </button>
+        </form>
+
+        <!-- Descargar todos los archivos en ZIP -->
+        <a href="{% url 'descargar_respaldo_zip' %}" class="btn-respaldo">
+            📦 Descargar todos los archivos
+        </a>
+    </div>
+
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Ocultar automáticamente los toasts después de 5 segundos
+setTimeout(() => {
+    const toasts = document.querySelectorAll('.toast');
+    toasts.forEach(t => t.remove());
+}, 5000);
+</script>
 {% endblock %}
