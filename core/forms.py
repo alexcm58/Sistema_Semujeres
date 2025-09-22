@@ -51,3 +51,13 @@ class AnexoForm(forms.ModelForm):
             'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'obligatorio': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+from django import forms
+
+class RecuperarContrasenaForm(forms.Form):
+    email = forms.EmailField(
+        label='Correo institucional',
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'Ingresa tu correo',
+            'class': 'input-login'
+        })
+    )

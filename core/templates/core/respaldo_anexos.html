@@ -1,0 +1,45 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block title %}Respaldos de Anexos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/admin_anexos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="contenedor-principal">
+    <h2 class="titulo-seccion titulo-centrado">Anexos Respaldados</h2>
+
+    {% if respaldos %}
+    <table class="tabla-estilo">
+        <thead>
+            <tr>
+                <th>Entidad</th>
+                <th>Documento</th>
+                <th>Trimestre</th>
+                <th>Archivo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for respaldo in respaldos %}
+            <tr>
+                <td>{{ respaldo.entidad }}</td>
+                <td>{{ respaldo.anexo_requerido }}</td>
+                <td>{{ respaldo.trimestre }}</td>
+                <td>
+                    {% if respaldo.archivo %}
+                    <a href="{{ respaldo.archivo.url }}" target="_blank">Descargar</a>
+                    {% else %}
+                    —
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No hay anexos respaldados aún.</p>
+    {% endif %}
+</div>
+{% endblock %}

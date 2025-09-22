@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.utils.text import slugify
 
+
 # Python estándar
 from datetime import datetime
 from io import BytesIO
@@ -1589,6 +1590,48 @@ def eliminar_todos_anexos(request):
     messages.success(request, "Todos los anexos han sido eliminados.")
     return redirect('admin_anexos')
 
+
+
+# Opción 1: Solo limpiar
+@user_passes_test(es_admin)
+def limpiar_anexos_subidos(request):
+    anexos = AnexoUsuario.objects.all()
+    for anexo in anexos:
+        if anexo.archivo:
+            anexo.archivo.delete(save=False)  # elimina el archivo físico
+            anexo.archivo = None
+            anexo.estado = 'pendiente'
+            anexo.observaciones = ''
+            anexo.save()
+    messages.success(request, "Los archivos subidos han sido limpiados para el nuevo trimestre.")
+    return redirect('admin_anexos')
+
+
+# Opción 2: Respaldar y limpiar
+@user_passes_test(es_admin)
+def respaldar_y_limpiar_anexos(request):
+    trimestre_actual = f"{now().year}-Q{((now().month-1)//3)+1}"
+    anexos = AnexoUsuario.objects.all()
+
+    for anexo in anexos:
+        if anexo.archivo:
+            # Guardar en histórico
+            AnexoHistorico.objects.create(
+                entidad=anexo.entidad,
+                anexo_requerido=anexo.anexo_requerido,
+                archivo=anexo.archivo,
+                trimestre=trimestre_actual
+            )
+            # Limpiar en el registro actual
+            anexo.archivo = None
+            anexo.estado = 'pendiente'
+            anexo.observaciones = ''
+            anexo.save()
+    messages.success(request, "Los archivos fueron respaldados y limpiados para el nuevo trimestre.")
+    return redirect('admin_anexos')
+
+
+
 @user_passes_test(es_admin)
 def reporte_anexos_pdf(request):
 
@@ -1664,3 +1707,31 @@ def reporte_anexos_pdf(request):
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     return response
+@user_passes_test(es_admin)
+def vista_respaldo_anexos(request):
+    respaldos = AnexoHistorico.objects.all().order_by('-trimestre')
+    return render(request, 'core/respaldo_anexos.html', {'respaldos': respaldos})
+
+
+@user_passes_test(lambda u: u.is_superuser)  # o tu función es_admin
+def respaldar_y_limpiar_anexos(request):
+    trimestre_actual = f"{now().year}-Q{((now().month-1)//3)+1}"
+    anexos = Documento.objects.all()
+
+    for anexo in anexos:
+        if anexo.archivo:
+            # Guardar en histórico
+            AnexoHistorico.objects.create(
+                entidad=anexo.usuario,
+                anexo_requerido=anexo.anexo,
+                archivo=anexo.archivo,
+                trimestre=trimestre_actual
+            )
+            # Limpiar en el registro actual
+            anexo.archivo = None
+            anexo.estado = 'pendiente'
+            anexo.observaciones = ''
+            anexo.save()
+    messages.success(request, "Los archivos fueron respaldados y limpiados para el nuevo trimestre.")
+    return redirect('admin_anexos')
+

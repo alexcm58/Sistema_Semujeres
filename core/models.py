@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 
+
+
 # ----------------------------
 # Roles de usuario
 # ----------------------------
@@ -55,3 +57,15 @@ class Documento(models.Model):
 
     def __str__(self):
         return f"{self.usuario.username} - {self.anexo.nombre}"
+    
+
+class AnexoHistorico(models.Model):
+    entidad = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    anexo_requerido = models.ForeignKey('AnexoRequerido', on_delete=models.CASCADE)
+    archivo = models.FileField(upload_to='anexos_historicos/')
+    fecha_subida = models.DateTimeField(auto_now_add=True)
+    trimestre = models.CharField(max_length=20)  # Ej: "2025-Q3"
+
+    def __str__(self):
+        return f"{self.entidad} - {self.anexo_requerido} ({self.trimestre})"
+

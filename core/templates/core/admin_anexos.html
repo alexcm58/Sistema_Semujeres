@@ -12,9 +12,6 @@
 
     <h2 class="titulo-seccion titulo-centrado">Administración de Documentos Requeridos</h2>
 
-    
-    
-
     <!-- Formulario para agregar -->
     <div class="tarjeta-formulario">
         <h4>Agregar nuevo documento requerido</h4>
@@ -63,19 +60,41 @@
         <p>No hay documentos registrados aún.</p>
         {% endif %}
     </div>
-    <div style="text-align: center; margin-top: 20px;">
-        <a href="{% url 'eliminar_todos_anexos' %}" class="btn btn-danger btn-sm"
-           onclick="return confirm('¿Estás seguro de eliminar TODOS los documentos requeridos?');"
-           style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; margin: 10px; color: white; border-radius: 8px; text-decoration: none;">
-            🗑️ Eliminar todos los anexos
-        </a>
-    
+
+    <!-- Contenedor de botones centrados -->
+    <div class="contenedor-botones" style="display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+        <!-- Limpiar anexos subidos -->
+        <form method="post" action="{% url 'limpiar_anexos' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning btn-sm"
+                onclick="return confirm('¿Seguro que deseas limpiar todos los archivos subidos por las entidades?');"
+                style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px;">
+                🔄 Limpiar anexos subidos
+            </button>
+        </form>
+
+        <!-- Respaldar y limpiar anexos -->
+        <form method="post" action="{% url 'respaldar_limpiar_anexos' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm"
+                onclick="return confirm('¿Seguro que deseas respaldar y limpiar los archivos subidos?');"
+                style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px;">
+                📦 Respaldar y limpiar anexos
+            </button>
+        </form>
+
+        <!-- Generar reporte de anexos -->
         <a href="{% url 'reporte_anexos_pdf' %}" class="btn btn-secondary btn-sm"
-           style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; margin: 10px; color: white; border-radius: 8px; text-decoration: none;">
+           style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px; text-decoration: none;">
             📄 Generar reporte de anexos
         </a>
+
+        <!-- Ver anexos respaldados -->
+        <a href="{% url 'vista_respaldo_anexos' %}" class="btn btn-info btn-sm"
+           style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px; text-decoration: none;">
+            🗂 Ver anexos respaldados
+        </a>
     </div>
+
 </div>
-
-
 {% endblock %}
