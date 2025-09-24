@@ -1,118 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
-    {% load static %}
-
+<html lang="es">
+{% load static %}
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Footer</title>
-    <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Footer</title>
+  <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
+  <style>
+    footer {
+      background-color: #7B1F26; /* vino institucional */
+      color: #f1f1f1;
+      padding: 50px 20px 20px;
+    }
+    .footer-container {
+      max-width: 1170px;
+      margin: auto;
+      display: flex;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+    .footer-col {
+      flex: 1 1 300px;
+      text-align: center;
+    }
+    .footer-col h3 {
+      color: #d4af37; /* dorado */
+      margin-bottom: 15px;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .footer-col p, .footer-col li, .footer-col a {
+      font-size: 15px;
+      color: #f1f1f1;
+      text-decoration: none;
+    }
+    .footer-col a:hover {
+      color: #d4af37;
+    }
+    .footer-col ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-col ul li {
+      margin: 6px 0;
+    }
+    .footer-logo img {
+      max-width: 160px;
+      margin-bottom: 15px;
+    }
+    .social-icons {
+      margin-top: 15px;
+    }
+    .social-icons a {
+      margin: 0 10px;
+      font-size: 22px;
+      color: #f1f1f1;
+      transition: color 0.3s;
+    }
+    .social-icons a:hover {
+      color: #d4af37;
+    }
+    .bottom-bar {
+      margin-top: 30px;
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+      background-color: #62151d; /* un vino más oscuro */
+    }
+  </style>
 </head>
-<style>
-    *{
-        margin: 0;
-        padding: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 16px;
-        color: white;
-    }
-    footer{
-        background: #621d28;
-        padding-top: 50px;
-    }
-    .container{
-        width: 1140px;
-        margin: auto;
-        display: flex;
-        justify-content: center;
-    }
-    .footer-content{
-        width: 33.3%;
-    }
-    h3{
-        font-size: 28px;
-        margin-bottom: 15px;
-        text-align: center;
-    }
-    .footer-content p{
-        width:190px;
-        margin: auto;
-        padding: 7px;
-    }
-    .footer-content ul{
-        text-align: center;
-    }
-    .list{
-        padding: 0;
-    }
-    .list li{
-        width: auto;
-        text-align: center;
-        list-style-type:none;
-        padding: 7px;
-        position: relative;
-    }
-    .list li::before{
-        content: '';
-        position: absolute;
-        transform: translate(-50%,-50%);
-        left: 50%;
-        top: 100%;
-        width: 0;
-        height: 2px;
-        background: #621d28;
-        transition-duration: .5s;
-    }
-    .list li:hover::before{
-        width: 70px;
-    }
-    a{
-        text-decoration: none;
-    }
-    a:hover{
-        color: #621d28;
-    }
-    .bottom-bar{
-        background: #621d28;
-        text-align: center;
-        padding: 10px 0;
-        margin-top: 50px;
-    }
-    .bottom-bar p{
-        color: #621d28;
-        margin: 0;
-        font-size: 16px;
-        padding: 7px;
-    }
-
-</style>
 <body>
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <h3>Labsol</h3>
-                <img src="{% static 'Users/AlejandroChavez/Downloads//Users/AlejandroChavez/Downloads/logo_labsol-fotor-bg-remover-20250917235642.png' %}" alt="Logo Labsol" >
-            </div>            
-            <div class="footer-content">
-                <h3>Equipo</h3>
-                 <ul class="list">
-                    <li><a href="#">Alejandro Chávez Murillo</a></li>
-                    <li><a href="#">Jesús Alberto Rodríguez Valencia</a></li>
-                    <li><a href="#">Karla Guadalupe Rocha Quezada</a></li>
-                 </ul>
-            </div>
-            <div class="footer-content">
-                <h3>Colaboradores</h3>
-                <ul class="list">
-                    <li><a href="#">Jesús Alberto Rodríguez Valencia</a></li>
-                    <li><a href="#">Alejandro Chávez Murillo</a></li>
-                    <li><a href="#">Karla Guadalupe Rocha Quezada</a></li>
-                </ul>
-            </div>
+  <footer>
+    <div class="footer-container">
+      <!-- Columna 1: Logo y dirección -->
+      <div class="footer-col footer-logo">
+        <img src="{% static 'img/logo_labsol.png' %}" alt="Logo Labsol">
+        <p>Circuito Cerro del Gato s/n<br>Ciudad Administrativa</p>
+        <p>CP 98160, Zacatecas, Zac.</p>
+      </div>
+
+      <!-- Columna 2: Equipo -->
+      <div class="footer-col">
+        <h3>Equipo</h3>
+        <ul>
+          <li><a href="#">Alejandro Chávez Murillo</a></li>
+          <li><a href="#">Jesús Alberto Rodríguez Valencia</a></li>
+          <li><a href="#">Karla Guadalupe Rocha Quezada</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Contacto -->
+      <div class="footer-col">
+        <h3>Contacto</h3>
+        <p><i class="fa-solid fa-phone"></i> 492 491 5000</p>
+        <p><i class="fa-solid fa-envelope"></i> contacto@zacatecas.gob.mx</p>
+        <div class="social-icons">
+          <a href="https://www.facebook.com/gobiernozac/" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://twitter.com/gobiernozac" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="https://www.instagram.com/gobiernozac/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.youtube.com/user/gobiernozac" target="_blank"><i class="fa-brands fa-youtube"></i></a>
         </div>
-        <div class="bottom-bar">
-            <p>&copy; 2025 IPN . All rights reserved</p>
-        </div>
-    </footer>
+      </div>
+    </div>
+
+    <!-- Barra inferior -->
+    <div class="bottom-bar">
+      <p>&copy; 2025 Gobierno del Estado de Zacatecas · Todos los derechos reservados</p>
+    </div>
+  </footer>
 </body>
 </html>

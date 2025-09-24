@@ -71,6 +71,8 @@ def cerrar_sesion(request):
     logout(request)
     return redirect('login')  # nombre de la URL del login
 
+
+
 @user_passes_test(es_admin)
 def admin_revision_documentacion(request):
     entidades = Usuario.objects.filter(rol='usuario')
@@ -80,15 +82,20 @@ def admin_revision_documentacion(request):
     if request.method == 'GET':
         entidad_id = request.GET.get('entidad')
         if entidad_id:
-            entidad_seleccionada = Usuario.objects.get(id=entidad_id)
+            entidad_seleccionada = get_object_or_404(Usuario, id=entidad_id)
+
+            # 🔹 Aseguramos que existan los documentos
+            for anexo in AnexoRequerido.objects.all():
+                Documento.objects.get_or_create(usuario=entidad_seleccionada, anexo=anexo)
+
             documentos = Documento.objects.filter(usuario=entidad_seleccionada)
 
     elif request.method == 'POST':
         entidad_id = request.GET.get('entidad')
         if entidad_id:
-            entidad_seleccionada = Usuario.objects.get(id=entidad_id)
-            documentos = Documento.objects.filter(usuario=entidad_seleccionada)
+            entidad_seleccionada = get_object_or_404(Usuario, id=entidad_id)
 
+            documentos = Documento.objects.filter(usuario=entidad_seleccionada)
             for doc in documentos:
                 estado = request.POST.get(f'estado_{doc.id}')
                 observaciones = request.POST.get(f'observaciones_{doc.id}')
@@ -96,6 +103,7 @@ def admin_revision_documentacion(request):
                     doc.estado = estado
                 doc.observaciones = observaciones
                 doc.save()
+
             return redirect(f'{request.path}?entidad={entidad_id}')
         
     if documentos:
@@ -129,13 +137,18 @@ def admin_crear_usuario(request):
 
 @login_required
 def usuario_dashboard(request):
+    # 🔹 Asegurar que el usuario tenga documentos creados
+    for anexo in AnexoRequerido.objects.all():
+        Documento.objects.get_or_create(usuario=request.user, anexo=anexo)
+
     documentos = Documento.objects.filter(usuario=request.user)
 
     if request.method == 'POST':
         for doc in documentos:
             archivo = request.FILES.get(f'documento_{doc.id}')
-            if archivo and not doc.archivo:
-                doc.archivo = archivo
+            if archivo:
+                # ⚠️ opcional: si quieres permitir reemplazar archivos
+                doc.archivo = archivo  
                 doc.save()
 
     # Cálculo del porcentaje validado
@@ -228,20 +241,44 @@ def sincronizar_documentos_por_usuario():
 @user_passes_test(es_admin)
 def reporte_general_pdf(request):
     buffer = BytesIO()
-    pdf = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=30)
+    pdf = SimpleDocTemplate(
+        buffer, pagesize=letter,
+        rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=50  # más margen inferior
+    )
 
     # --------------------
-    # ESTILOS
+    # ESTILOS Y COLORES
     # --------------------
-    arial12 = ParagraphStyle('Arial12', fontName='Helvetica', fontSize=12, leading=15)
-    arial10 = ParagraphStyle('Arial10', fontName='Helvetica', fontSize=10, leading=12)
-    encabezado = ParagraphStyle('Encabezado', fontName='Helvetica-Bold', fontSize=14, alignment=1, spaceAfter=10)
-    titulo = ParagraphStyle('Titulo', fontName='Helvetica-Bold', fontSize=16, alignment=1, spaceAfter=12)
-    sub_titulo = ParagraphStyle('SubTitulo', fontName='Helvetica-Bold', fontSize=12, spaceAfter=6)
-    observacion = ParagraphStyle('Observacion', fontName='Helvetica', fontSize=10, textColor=colors.HexColor('#333333'), spaceAfter=10, leftIndent=10, rightIndent=10)
+    vino_rl = colors.HexColor('#7B1F26')
+    dorado_rl = colors.HexColor('#d4af37')
+
+    # Matplotlib (para gráficos)
+    vino_hex = "#7B1F26"
+    dorado_hex = "#d4af37"
+
+    arial12 = ParagraphStyle(
+        'Arial12', fontName='Helvetica', fontSize=12,
+        leading=15, textColor=vino_rl
+    )
+    encabezado = ParagraphStyle(
+        'Encabezado', fontName='Helvetica-Bold', fontSize=14,
+        alignment=1, spaceAfter=10, textColor=vino_rl
+    )
+    titulo = ParagraphStyle(
+        'Titulo', fontName='Helvetica-Bold', fontSize=16,
+        alignment=1, spaceAfter=12, textColor=dorado_rl
+    )
+    sub_titulo = ParagraphStyle(
+        'SubTitulo', fontName='Helvetica-Bold', fontSize=12,
+        spaceAfter=6, textColor=vino_rl
+    )
+    observacion = ParagraphStyle(
+        'Observacion', fontName='Helvetica', fontSize=10,
+        textColor=colors.HexColor('#333333'), spaceAfter=10,
+        leftIndent=10, rightIndent=10
+    )
 
     elements = []
-
     ahora = datetime.now()
     fecha_str = ahora.strftime("%d de %B de %Y")
 
@@ -277,14 +314,16 @@ def reporte_general_pdf(request):
         [3, 'Documentos subidos', total_subidos],
         [4, 'Documentos validados', total_validados],
         [5, 'Documentos rechazados', total_rechazados],
-        [6, 'Documentos pendientes', total_pendientes],
+        [6, 'Documentos en proceso de revisión', total_pendientes],
         [7, 'Porcentaje global de validación', f"{porcentaje_global:.2f}%"]
     ]
-    t_resumen = Table(resumen, hAlign='LEFT', colWidths=[30, 200, 100])
+    t_resumen = Table(resumen, hAlign='CENTER', colWidths=[30, 250, 120])
     t_resumen.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#d3d3d3')),
+        ('BACKGROUND', (0,0), (-1,0), vino_rl),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
         ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold')
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+        ('ALIGN', (0,0), (-1,-1), 'CENTER')
     ]))
     elements.append(Paragraph("Resumen Ejecutivo", sub_titulo))
     elements.append(t_resumen)
@@ -293,42 +332,54 @@ def reporte_general_pdf(request):
     # --------------------
     # AVANCE POR ENTIDAD
     # --------------------
-    tabla_entidades = [['Entidad', 'Subidos', 'Validados', 'Rechazados', 'Pendientes', '% Validados']]
+    tabla_entidades = [['Entidad (Usuario)', 'Subidos', 'Validados', 'Rechazados', 'En proceso', '% Validados']]
     for ent in entidades:
         docs_ent = documentos.filter(usuario=ent)
         subidos = docs_ent.exclude(archivo='').count()
         validados = docs_ent.filter(estado='validado').count()
         rechazados = docs_ent.filter(estado='rechazado').count()
-        pendientes = docs_ent.count() - validados - rechazados
+        en_proceso = docs_ent.count() - validados - rechazados
         pct = (validados / docs_ent.count() * 100) if docs_ent.count() else 0
-        tabla_entidades.append([ent.entidad, subidos, validados, rechazados, pendientes, f"{pct:.2f}%"])
+        tabla_entidades.append([ent.username, subidos, validados, rechazados, en_proceso, f"{pct:.2f}%"])
 
-    t_entidades = Table(tabla_entidades, hAlign='LEFT', repeatRows=1)
+    t_entidades = Table(tabla_entidades, hAlign='CENTER', repeatRows=1)
     t_entidades.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#d3d3d3')),
+        ('BACKGROUND', (0,0), (-1,0), vino_rl),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
         ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold')
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+        ('ALIGN', (0,0), (-1,-1), 'CENTER')
     ]))
     elements.append(Paragraph("Avance por Entidad", sub_titulo))
     elements.append(t_entidades)
     elements.append(Spacer(1, 20))
 
     # --------------------
-    # ANEXOS MÁS RECHAZADOS
+    # GRAFICOS (solo globales)
     # --------------------
-    anexos = AnexoRequerido.objects.all()
-    tabla_anexos = [['Anexo', 'Veces rechazado']]
-    for a in anexos:
-        count_rech = Documento.objects.filter(anexo=a, estado='rechazado').count()
-        tabla_anexos.append([a.nombre, count_rech])
-    t_anexos = Table(tabla_anexos, hAlign='LEFT', repeatRows=1)
-    t_anexos.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#d3d3d3')),
-        ('GRID', (0,0), (-1,-1), 0.5, colors.black),
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold')
-    ]))
-    elements.append(Paragraph("Anexos más rechazados", sub_titulo))
-    elements.append(t_anexos)
+    estados = ['Validados', 'Rechazados', 'En revisión']
+    valores = [total_validados, total_rechazados, total_pendientes]
+
+    # Gráfico de barras global
+    plt.figure(figsize=(4,3))
+    plt.bar(estados, valores, color=['green', 'red', 'orange'])
+    plt.title("Distribución global de documentos")
+    img_buf = BytesIO()
+    plt.savefig(img_buf, format='png')
+    img_buf.seek(0)
+    elements.append(Image(img_buf, width=300, height=200))
+    plt.close()
+
+    # Gráfico circular (pie chart)
+    plt.figure(figsize=(4,3))
+    plt.pie(valores, labels=estados, autopct='%1.1f%%', colors=['green', 'red', 'orange'])
+    plt.title("Porcentaje global de documentos")
+    img_buf2 = BytesIO()
+    plt.savefig(img_buf2, format='png')
+    img_buf2.seek(0)
+    elements.append(Image(img_buf2, width=300, height=200))
+    plt.close()
+
     elements.append(Spacer(1, 20))
 
     # --------------------
@@ -336,7 +387,10 @@ def reporte_general_pdf(request):
     # --------------------
     observaciones = Documento.objects.exclude(observaciones__isnull=True).exclude(observaciones__exact='')
     for obs in observaciones:
-        elements.append(Paragraph(f"{obs.usuario.entidad} - {obs.anexo.nombre}: {obs.observaciones}", observacion))
+        elements.append(Paragraph(
+            f"{obs.usuario.username} - {obs.anexo.nombre}: {obs.observaciones}",
+            observacion
+        ))
 
     # --------------------
     # PIE DE PÁGINA
@@ -344,7 +398,8 @@ def reporte_general_pdf(request):
     def footer(canvas, doc):
         canvas.saveState()
         canvas.setFont('Helvetica', 8)
-        canvas.drawString(30, 15, "Secretaría de las Mujeres del Estado de Zacatecas - Reporte Institucional")
+        canvas.setFillColor(vino_rl)
+        canvas.drawString(30, 40, "Secretaría de las Mujeres del Estado de Zacatecas - Reporte Institucional")
         canvas.restoreState()
 
     pdf.build(elements, onFirstPage=footer, onLaterPages=footer)
@@ -357,37 +412,49 @@ def reporte_general_pdf(request):
 @user_passes_test(es_admin)
 def reporte_entidad_pdf(request, entidad_id):
     buffer = BytesIO()
-    pdf = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=30)
+    pdf = SimpleDocTemplate(
+        buffer, pagesize=letter,
+        rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=50
+    )
 
-    # Estilos
-    arial12 = ParagraphStyle('Arial12', fontName='Helvetica', fontSize=12, leading=15)
+    # --------------------
+    # COLORES Y ESTILOS
+    # --------------------
+    vino_rl = colors.HexColor('#7B1F26')
+    dorado_rl = colors.HexColor('#d4af37')
+
+    arial12 = ParagraphStyle('Arial12', fontName='Helvetica', fontSize=12, leading=15, textColor=vino_rl)
+    encabezado = ParagraphStyle('Encabezado', fontName='Helvetica-Bold', fontSize=14, alignment=1, spaceAfter=10, textColor=vino_rl)
+    titulo = ParagraphStyle('Titulo', fontName='Helvetica-Bold', fontSize=16, alignment=1, spaceAfter=12, textColor=dorado_rl)
+    sub_titulo = ParagraphStyle('SubTitulo', fontName='Helvetica-Bold', fontSize=12, spaceAfter=6, textColor=vino_rl)
     arial10 = ParagraphStyle('Arial10', fontName='Helvetica', fontSize=10, leading=12)
-    titulo = ParagraphStyle('Titulo', fontName='Helvetica-Bold', fontSize=16, alignment=1, spaceAfter=12)
-    sub_titulo = ParagraphStyle('SubTitulo', fontName='Helvetica-Bold', fontSize=12, spaceAfter=6)
-    observacion = ParagraphStyle('Observacion', fontName='Helvetica', fontSize=10, textColor=colors.HexColor('#333333'), spaceAfter=10, leftIndent=10, rightIndent=10)
+    observacion = ParagraphStyle('Observacion', fontName='Helvetica', fontSize=10, textColor=colors.HexColor('#333333'),
+                                 spaceAfter=10, leftIndent=10, rightIndent=10)
 
     elements = []
     ahora = datetime.now()
     fecha_str = ahora.strftime("%d de %B de %Y")
 
-    # Obtener entidad
+    # --------------------
+    # DATOS DE LA ENTIDAD
+    # --------------------
     entidad = get_object_or_404(Usuario, id=entidad_id)
     nombre_entidad = entidad.get_full_name() or entidad.username
     docs = Documento.objects.filter(usuario=entidad)
     total_docs = docs.count()
     validados = docs.filter(estado='validado').count()
     rechazados = docs.filter(estado='rechazado').count()
-    pendientes = docs.filter(estado='pendiente').count()
+    en_revision = docs.filter(estado='pendiente').count()  # 🔄 "pendiente" → "en proceso de revisión"
     porcentaje = (validados / total_docs * 100) if total_docs else 0
 
     # --------------------
     # PORTADA
     # --------------------
-    elements.append(Paragraph("Secretaría de las Mujeres del Estado de Zacatecas", titulo))
-    elements.append(Spacer(1, 20))
+    elements.append(Paragraph("Secretaría de las Mujeres del Estado de Zacatecas", encabezado))
+    elements.append(Spacer(1, 12))
     elements.append(Paragraph(f"📄 Reporte de la Entidad: {nombre_entidad}", titulo))
     elements.append(Paragraph(f"Fecha de generación: {fecha_str}", arial12))
-    elements.append(Spacer(1, 30))
+    elements.append(Spacer(1, 20))
 
     # --------------------
     # TABLA 1: Resumen ejecutivo
@@ -397,36 +464,37 @@ def reporte_entidad_pdf(request, entidad_id):
         [1, 'Documentos esperados', total_docs],
         [2, 'Documentos validados', validados],
         [3, 'Documentos rechazados', rechazados],
-        [4, 'Documentos pendientes', pendientes],
+        [4, 'Documentos en proceso de revisión', en_revision],
         [5, 'Avance (%)', f'{porcentaje:.1f}%']
     ]
-    tabla_resumen = Table(resumen, hAlign='CENTER', colWidths=[30,200,100])
+    tabla_resumen = Table(resumen, hAlign='CENTER', colWidths=[30, 250, 100])
     tabla_resumen.setStyle(TableStyle([
-        ('BACKGROUND',(0,0),(-1,0),colors.HexColor('#7B1F26')),
+        ('BACKGROUND',(0,0),(-1,0),vino_rl),
         ('TEXTCOLOR',(0,0),(-1,0),colors.white),
         ('GRID',(0,0),(-1,-1),0.5,colors.black),
         ('ALIGN',(0,0),(-1,-1),'CENTER'),
-        ('FONTNAME',(0,0),(-1,-1),'Helvetica'),
-        ('FONTSIZE',(0,0),(-1,-1),10)
+        ('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),
     ]))
 
-    elements.append(KeepTogether([
-        Paragraph("📊 Resumen Ejecutivo de la Entidad", sub_titulo),
-        tabla_resumen,
-        Paragraph("Tabla 1: Resumen general de la entidad", arial10),
-        Paragraph(f"Observación: La entidad {nombre_entidad} presenta un avance del {porcentaje:.1f}%. "
-                  f"Con {validados} documentos validados de un total de {total_docs}, "
-                  f"{'su desempeño es sobresaliente.' if porcentaje >= 80 else 'se encuentra en proceso, con áreas por mejorar.'}", observacion)
-    ]))
+    elements.append(Paragraph("📊 Resumen Ejecutivo de la Entidad", sub_titulo))
+    elements.append(tabla_resumen)
+    elements.append(Spacer(1, 10))
+    elements.append(Paragraph(
+        f"Observación: La entidad {nombre_entidad} presenta un avance del {porcentaje:.1f}%. "
+        f"Con {validados} documentos validados de un total de {total_docs}, "
+        f"{'su desempeño es sobresaliente.' if porcentaje >= 80 else 'se encuentra en proceso, con áreas por mejorar.'}",
+        observacion
+    ))
     elements.append(Spacer(1, 15))
 
     # --------------------
     # GRÁFICO 1: Distribución por estado
     # --------------------
-    fig, ax = plt.subplots(figsize=(6,4))
-    estados = ['Validados','Rechazados','Pendientes']
-    valores = [validados, rechazados, pendientes]
+    estados = ['Validados','Rechazados','En proceso de revisión']
+    valores = [validados, rechazados, en_revision]
     colores = ['#4CAF50','#FF6347','#FFD700']
+
+    fig, ax = plt.subplots(figsize=(5,4))
     ax.pie(valores, labels=estados, autopct='%1.1f%%', colors=colores, startangle=90)
     ax.set_title('Distribución de Documentos por Estado')
     plt.tight_layout()
@@ -435,65 +503,36 @@ def reporte_entidad_pdf(request, entidad_id):
     plt.close(fig)
     img_buf.seek(0)
 
-    elements.append(KeepTogether([
-        Paragraph("Gráfico 1: Distribución de documentos de la entidad", arial10),
-        Image(img_buf, width=400, height=250),
-        Paragraph(f"Observación: Predominan los documentos {('validados' if validados>rechazados and validados>pendientes else 'rechazados' if rechazados>pendientes else 'pendientes')}, "
-                  f"lo que refleja la situación actual de la entidad.", observacion)
-    ]))
+    elements.append(Image(img_buf, width=300, height=200, hAlign='CENTER'))
+    elements.append(Paragraph(
+        f"Observación: Predominan los documentos {('validados' if validados>rechazados and validados>en_revision else 'rechazados' if rechazados>en_revision else 'en proceso de revisión')}, "
+        f"lo que refleja la situación actual de la entidad.", observacion
+    ))
     elements.append(Spacer(1,15))
 
     # --------------------
     # TABLA 2: Documentos por anexo
     # --------------------
     anexos = AnexoRequerido.objects.all()
-    tabla_anexos_data = [['#','Anexo','Validados','Rechazados','Pendientes']]
+    tabla_anexos_data = [['#','Anexo','Validados','Rechazados','En proceso de revisión']]
     for i, anexo in enumerate(anexos, start=1):
         docs_anexo = docs.filter(anexo=anexo)
         val = docs_anexo.filter(estado='validado').count()
         rec = docs_anexo.filter(estado='rechazado').count()
-        pen = docs_anexo.filter(estado='pendiente').count()
-        tabla_anexos_data.append([i, anexo.nombre, val, rec, pen])
+        proc = docs_anexo.filter(estado='pendiente').count()
+        tabla_anexos_data.append([i, anexo.nombre, val, rec, proc])
 
-    tabla_anexos = Table(tabla_anexos_data, hAlign='CENTER', colWidths=[30,200,60,60,60])
+    tabla_anexos = Table(tabla_anexos_data, hAlign='CENTER', colWidths=[30,200,70,70,100])
     tabla_anexos.setStyle(TableStyle([
-        ('BACKGROUND',(0,0),(-1,0),colors.HexColor('#7B1F26')),
+        ('BACKGROUND',(0,0),(-1,0),vino_rl),
         ('TEXTCOLOR',(0,0),(-1,0),colors.white),
         ('GRID',(0,0),(-1,-1),0.5,colors.black),
         ('ALIGN',(0,0),(-1,-1),'CENTER'),
-        ('FONTSIZE',(0,0),(-1,-1),9),
-        ('FONTNAME',(0,0),(-1,0),'Helvetica-Bold')
+        ('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),
     ]))
 
-    elements.append(KeepTogether([
-        Paragraph("📋 Estado de Documentos por Anexo", sub_titulo),
-        tabla_anexos,
-        Paragraph("Tabla 2: Avance de documentos por anexo", arial10)
-    ]))
-    elements.append(Spacer(1,15))
-
-    # --------------------
-    # GRÁFICO 2: Documentos validados por anexo
-    # --------------------
-    anexos_nombres = [a.nombre for a in anexos]
-    val_por_anexo = [docs.filter(anexo=a, estado='validado').count() for a in anexos]
-    fig2, ax2 = plt.subplots(figsize=(8,4))
-    ax2.bar(anexos_nombres, val_por_anexo, color='#7B1F26')
-    ax2.set_title("Documentos Validados por Anexo")
-    ax2.set_ylabel("Cantidad")
-    plt.xticks(rotation=45, ha='right')
-    plt.tight_layout()
-    buf2 = BytesIO()
-    plt.savefig(buf2, format='png')
-    plt.close(fig2)
-    buf2.seek(0)
-
-    elements.append(KeepTogether([
-        Paragraph("Gráfico 2: Documentos validados por anexo", arial10),
-        Image(buf2, width=500, height=250),
-        Paragraph("Observación: Se destacan los anexos con mayor número de documentos validados. "
-                  "Esto permite identificar los temas en los que la entidad ha mostrado mayor avance.", observacion)
-    ]))
+    elements.append(Paragraph("📋 Estado de Documentos por Anexo", sub_titulo))
+    elements.append(tabla_anexos)
     elements.append(Spacer(1,15))
 
     # --------------------
@@ -504,45 +543,45 @@ def reporte_entidad_pdf(request, entidad_id):
     for i, (anexo, cant) in enumerate(rechazos_por_anexo.items(), start=1):
         tabla_rechazos.append([i, anexo, cant])
 
-    tabla_rechazos_t = Table(tabla_rechazos, hAlign='CENTER', colWidths=[30,200,60])
+    tabla_rechazos_t = Table(tabla_rechazos, hAlign='CENTER', colWidths=[30,250,100])
     tabla_rechazos_t.setStyle(TableStyle([
-        ('BACKGROUND',(0,0),(-1,0),colors.HexColor('#7B1F26')),
+        ('BACKGROUND',(0,0),(-1,0),vino_rl),
         ('TEXTCOLOR',(0,0),(-1,0),colors.white),
         ('GRID',(0,0),(-1,-1),0.5,colors.black),
         ('ALIGN',(0,0),(-1,-1),'CENTER'),
-        ('FONTSIZE',(0,0),(-1,-1),9),
-        ('FONTNAME',(0,0),(-1,0),'Helvetica-Bold')
+        ('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),
     ]))
 
     max_rechazo = max(rechazos_por_anexo.values()) if rechazos_por_anexo else 0
     anexo_max = [k for k,v in rechazos_por_anexo.items() if v==max_rechazo][0] if max_rechazo else None
 
-    elements.append(KeepTogether([
-        Paragraph("📋 Anexos con Mayor Número de Rechazos", sub_titulo),
-        tabla_rechazos_t,
-        Paragraph("Tabla 3: Número de documentos rechazados por anexo", arial10),
-        Paragraph(f"Observación: El anexo con más rechazos es '{anexo_max}' con {max_rechazo} documentos. "
-                  "Este punto debe recibir especial atención.", observacion) if anexo_max else Paragraph("Observación: No se registran rechazos en los anexos.", observacion)
-    ]))
+    elements.append(Paragraph("📋 Anexos con Mayor Número de Rechazos", sub_titulo))
+    elements.append(tabla_rechazos_t)
+    elements.append(Spacer(1, 10))
+    elements.append(Paragraph(
+        f"Observación: El anexo con más rechazos es '{anexo_max}' con {max_rechazo} documentos. "
+        "Este punto debe recibir especial atención." if anexo_max else "Observación: No se registran rechazos en los anexos.",
+        observacion
+    ))
     elements.append(Spacer(1,15))
 
     # --------------------
-    # Pie de página
+    # PIE DE PÁGINA
     # --------------------
-    pie = Paragraph(
-        "Este reporte ha sido generado automáticamente por el Sistema de \"Seguimiento Secretaría de las Mujeres - Gestión y Revisión de Documentación\" Estado de Zacatecas.",
-        ParagraphStyle('pie', fontSize=9, alignment=1, textColor=colors.grey)
-    )
-    elements.append(Spacer(1,20))
-    elements.append(pie)
+    def footer(canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Helvetica', 8)
+        canvas.setFillColor(vino_rl)
+        canvas.drawString(30, 40, "Secretaría de las Mujeres del Estado de Zacatecas - Reporte Institucional")
+        canvas.restoreState()
 
-    pdf.build(elements)
+    pdf.build(elements, onFirstPage=footer, onLaterPages=footer)
+
     buffer.seek(0)
-    nombre_archivo = f"reporte_entidad_{(entidad)}_{ahora.year}.pdf"
+    nombre_archivo = f"reporte_entidad_{entidad.username}_{ahora.year}.pdf"
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     return response
-
 
 #ANEXOS 
 @user_passes_test(es_admin)

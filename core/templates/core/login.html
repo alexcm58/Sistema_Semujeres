@@ -6,29 +6,84 @@
     <title>Iniciar sesión</title>
     <link rel="stylesheet" href="{% static 'core/css/login.css' %}">
     <link rel="icon" href="{% static 'core/img/zaclogo-removebg-preview.png' %}" type="image/png">
+    <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
+    <style>
+        footer {
+            background-color: #621d28;
+            color: #ffffff;
+            padding: 15px 10px 5px;
+            margin-top: 30px;
+            font-size: 12px;
+        }
+        .footer-container {
+            max-width: 1000px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .footer-col {
+            flex: 1 1 200px;
+            text-align: center;
+        }
+        .footer-col h3 {
+            color: #f1f1f1;
+            margin-bottom: 6px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .footer-col p, .footer-col li {
+            font-size: 12px;
+            margin: 2px 0;
+            line-height: 1.4;
+        }
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer-logo img {
+            max-width: 160px;
+            margin-bottom: 8px;
+        }
+        .social-icons {
+            margin-top: 5px;
+        }
+        .social-icons a {
+            margin: 0 4px;
+            font-size: 14px;
+            color: #ffffff;
+        }
+        .bottom-bar {
+            margin-top: 8px;
+            padding: 6px;
+            text-align: center;
+            font-size: 11px;
+            background-color: #621d28;
+        }
+    </style>
 </head>
 <body>
 
-       <!-- Barra institucional superior -->
-<div class="barra-superior">
-    <div class="barra-izquierda">
-        <img src="{% static 'core/img/zaclogo.jpeg' %}" alt="Zacatecas Logo" class="logo-barra">
-        <a href="https://zacatecas.gob.mx" class="link-zacatecas" target="_blank">zacatecas.gob.mx</a>
+    <!-- Barra institucional superior -->
+    <div class="barra-superior">
+        <div class="barra-izquierda">
+            <img src="{% static 'core/img/zaclogo.jpeg' %}" alt="Zacatecas Logo" class="logo-barra">
+            <a href="https://zacatecas.gob.mx" class="link-zacatecas" target="_blank">zacatecas.gob.mx</a>
+        </div>
+        <div class="barra-derecha">
+            <a href="https://www.zacatecas.gob.mx/tramites/" target="_blank">TRÁMITE</a>
+            <a href="https://www.zacatecas.gob.mx/gobierno/" target="_blank">GOBIERNO</a>
+        </div>
     </div>
-    <div class="barra-derecha">
-        <a href="https://www.zacatecas.gob.mx/tramites/" target="_blank">TRÁMITE</a>
-        <a href="https://www.zacatecas.gob.mx/gobierno/" target="_blank">GOBIERNO</a>
-    </div>
-</div>
 
-    
     <!-- Banner del Modelo -->
     <div class="banner-modelo">
         <img src="{% static 'core/img/modelo_igualdad.jpg' %}" alt="Modelo Igualdad" class="logo-modelo-banner">
     </div>
 
-        
-
+    <!-- Formulario de inicio de sesión -->
     <div class="login-container">
         <form method="post">
             {% csrf_token %}
@@ -39,55 +94,55 @@
         <div class="links">
             <a href="{% url 'olvido_contrasena' %}">¿Olvidaste tu contraseña?</a>
         </div>
-
     </div>
 
     {% if error %}
-<div id="toast-error" class="toast-error show">
-    ⚠️ {{ error }}
-</div>
-<script>
-    // Ocultar el toast después de 4 segundos
-    setTimeout(() => {
-        const toast = document.getElementById('toast-error');
-        if (toast) {
-            toast.classList.remove('show');
-        }
-    }, 4000);
-</script>
-{% endif %}
+    <div id="toast-error" class="toast-error show">
+        ⚠️ {{ error }}
+    </div>
+    <script>
+        setTimeout(() => {
+            const toast = document.getElementById('toast-error');
+            if (toast) {
+                toast.classList.remove('show');
+            }
+        }, 4000);
+    </script>
+    {% endif %}
 
-    
-
-    <!-- Footer -->
+    <!-- Footer institucional compacto -->
     <footer>
-        <div class="footer-contenido">
-            <!-- Bloque equipo -->
-            <div class="footer-equipo">
-                <h3>EQUIPO</h3>
+        <div class="footer-container">
+            <div class="footer-col footer-logo">
+                <img src="{% static 'core/img/logo_labsol.png' %}" alt="Logo Zacatecas">
+                <p>Circuito Cerro del Gato s/n</p>
+                <p>Ciudad Administrativa</p>
+                <p>CP 98160, Zacatecas, Zac.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Equipo</h3>
                 <ul>
-                    <li>Jesús Alberto Rodríguez Valencia</li>
                     <li>Alejandro Chávez Murillo</li>
+                    <li>Jesús Alberto Rodríguez Valencia</li>
                     <li>Karla Guadalupe Rocha Quezada</li>
                 </ul>
             </div>
-
-            <!-- Bloque contacto -->
-            <div class="footer-info">
-                <h3>CONTACTO</h3>
-                <p>Ciudad Administrativa · Edificio K Piso 1</p>
-                <p>Oficina Cerro del Gato, CP 98160, Zacatecas</p>
-                <p>452 491 50 00 Ext. 45239</p>
-                <p>semujer@zacatecas.gob.mx</p>
-                <p>Lunes a Viernes de 8:30 a 16:00 horas</p>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <p><i class="fa-solid fa-phone"></i> 492 491 5000</p>
+                <p><i class="fa-solid fa-envelope"></i> contacto@zacatecas.gob.mx</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/gobiernozac/" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/gobiernozac" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://www.instagram.com/gobiernozac/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/user/gobiernozac" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                </div>
             </div>
         </div>
-
-        <div class="footer-bottom">
+        <div class="bottom-bar">
             <p>&copy; 2025 Gobierno del Estado de Zacatecas - Todos los derechos reservados</p>
         </div>
     </footer>
 
 </body>
 </html>
-
