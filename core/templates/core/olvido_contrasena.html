@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restablecer Contraseña</title>
+    <title>Recuperar Contraseña</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -44,7 +44,7 @@
             font-size: 16px;
         }
         button {
-            background-color: #4CAF50;
+            background-color: #621d28;
             color: white;
             padding: 12px 20px;
             border: none;
@@ -54,7 +54,7 @@
             font-size: 16px;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #8b2c3a;
         }
         .message {
             text-align: center;
@@ -92,9 +92,9 @@
         <!-- Formulario -->
         <form id="passwordResetForm" method="POST">
             {% csrf_token %}
-            <h2>Ingresa tu correo electrónico:</h2>
-            <input type="email" id="email" name="email" required placeholder="ejemplo@dominio.com">
-            <button type="submit">Enviar enlace</button>
+            <h2>Recuperar contraseña</h2>
+            <input type="email" id="correo" name="correo" required placeholder="ejemplo@dominio.com">
+            <button type="submit">Enviar nueva contraseña</button>
         </form>
     </div>
 </body>

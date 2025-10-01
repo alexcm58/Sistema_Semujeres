@@ -88,15 +88,6 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/login/'
 
-# SMTP para recuperación de contraseña
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'achavezm58@gmail.com'        # Cambia por tu correo
-EMAIL_HOST_PASSWORD = 'jswe ffzn iaxj rcbm'      # Cambia por tu contraseña de app si es Gmail
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -106,6 +97,7 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "rochakarla170112001@gmail.com"   # <-- pon tu Gmail aquí
-EMAIL_HOST_PASSWORD = "ueyi vrux rihl eekz"        # <-- pon tu contraseña o app password aquí
+EMAIL_HOST_USER = "asemujeres@gmail.com"
+EMAIL_HOST_PASSWORD = "fvjp lwjy iyby jnrn"  # tu contraseña de aplicación   # <-- pon tu contraseña o app password aquí
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+

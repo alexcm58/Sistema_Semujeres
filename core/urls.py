@@ -4,6 +4,8 @@ from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
 from . import views
 
+
+
 urlpatterns = [
     # Dashboard y sesiones
     path('dashboard/', views.usuario_dashboard, name='usuario_dashboard'),
@@ -33,7 +35,7 @@ urlpatterns = [
     path('vista_respaldo_anexos/', views.vista_respaldo_anexos, name='vista_respaldo_anexos'),
     path('limpiar_respaldo/', views.limpiar_respaldo, name='limpiar_respaldo'),
     path('descargar_respaldo_zip/', views.descargar_respaldo_zip, name='descargar_respaldo_zip'),
-
+    path("cambiar_contrasena/", views.cambiar_contrasena, name="cambiar_contrasena"),
 
     # Redireccionamiento por defecto
     path('', lambda request: redirect('login')),

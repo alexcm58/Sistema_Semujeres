@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cambiar Contraseña</title>
+    <link rel="stylesheet" href="{% static 'core/css/login.css' %}">
+    <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .barra-superior {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .barra-superior img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .barra-superior .link-zacatecas {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
+        .barra-superior .boton-salir {
+            font-weight: bold;
+            color: #0b0b0bff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .container {
+            max-width: 450px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #621d28;
+            margin-bottom: 20px;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .input-group i {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+        }
+        button {
+            background-color: #621d28;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #8b2c3a;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra superior -->
+    <div class="barra-superior">
+        <div class="barra-izquierda">
+            <img src="{% static 'core/img/zaclogo.jpeg' %}" alt="Zacatecas Logo">
+            <a href="https://zacatecas.gob.mx" class="link-zacatecas" target="_blank">zacatecas.gob.mx</a>
+        </div>
+        <div class="barra-derecha">
+            <a href="{% url 'usuario_dashboard' %}" class="boton-salir">Salir</a>
+        </div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        <h2>Cambiar contraseña</h2>
+
+        <!-- Mensajes -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Formulario -->
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                {{ form.old_password }}
+                <i class="fa fa-eye" onclick="togglePassword('id_old_password', this)"></i>
+            </div>
+            <div class="input-group">
+                {{ form.new_password1 }}
+                <i class="fa fa-eye" onclick="togglePassword('id_new_password1', this)"></i>
+            </div>
+            <div class="input-group">
+                {{ form.new_password2 }}
+                <i class="fa fa-eye" onclick="togglePassword('id_new_password2', this)"></i>
+            </div>
+            <button type="submit">Guardar cambios</button>
+        </form>
+    </div>
+
+    <script>
+        function togglePassword(id, el) {
+            const input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+                el.classList.remove("fa-eye");
+                el.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                el.classList.remove("fa-eye-slash");
+                el.classList.add("fa-eye");
+            }
+        }
+    </script>
+
+</body>
+</html>

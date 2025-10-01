@@ -790,57 +790,82 @@ def descargar_respaldo_zip(request):
     response['Content-Disposition'] = 'attachment; filename=respaldo_anexos.zip'
     return response
 
+import random, string
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Usuario  # tu modelo de usuario
+import random
+import string
+from django.core.mail import send_mail
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from .models import Usuario  # asegúrate de importar tu modelo personalizado
 
-#Recuperción de contraseña
+def generar_contrasena(longitud=10):
+    """Genera contraseña aleatoria provisional"""
+    caracteres = string.ascii_letters + string.digits
+    return ''.join(random.choice(caracteres) for _ in range(longitud))
 
 def olvido_contrasena(request):
     if request.method == "POST":
-        email = request.POST.get("email", "").strip()  # Quitamos espacios
+        correo = request.POST.get("correo")  # 👈 asegúrate que en el form el campo se llame 'correo'
 
-        if not email:
-            # Validación si no ingresa correo
-            messages.error(request, "Por favor, ingresa un correo válido.")
-            return redirect("olvido_contrasena")
+        try:
+            usuario = Usuario.objects.get(correo=correo)
 
-        # Aquí mandas un correo al administrador avisando
-        send_mail(
-            subject="Solicitud de recuperación de contraseña",
-            message=f"El usuario con correo {email} solicitó recuperar su contraseña.",
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=["tu_correo_admin@gmail.com"],  # <-- cambia por el correo del admin
-            fail_silently=False,
-        )
-        
-        # Mensaje de éxito
-        messages.success(request, "Se ha enviado tu solicitud al administrador.")
-        return redirect("olvido_contrasena")  # o a otra página que quieras
+            # Generar nueva contraseña provisional
+            nueva_pass = generar_contrasena()
+            usuario.set_password(nueva_pass)  # 👈 se guarda encriptada
+            usuario.save()
+
+            # Enviar correo
+            mensaje = f"""Hola {usuario.nombre_responsable},
+
+Tu nueva contraseña es: {nueva_pass}
+
+Por favor, cambia tu contraseña después de iniciar sesión.
+"""
+            send_mail(
+                subject="Recuperación de contraseña - SEMUJERES",
+                message=mensaje,
+                from_email="asemujeres@gmail.com",  # 👈 usa tu correo configurado en settings.py
+                recipient_list=[usuario.correo],
+                fail_silently=False,
+            )
+
+            messages.success(request, "Se envió una nueva contraseña a tu correo.")
+            return redirect("login")
+
+        except Usuario.DoesNotExist:
+            messages.error(request, "El correo no está registrado.")
 
     return render(request, "core/olvido_contrasena.html")
 
 
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import render
 
-#Recuperción de contraseña
-
-def olvido_contrasena(request):
+@login_required
+def cambiar_contrasena(request):
     if request.method == "POST":
-        email = request.POST.get("email", "").strip()  # Quitamos espacios
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # 🔑 Para que no cierre sesión
+            messages.success(request, "Tu contraseña se cambió correctamente.")
+            return render(request, "core/cambiar_contrasena.html", {"form": PasswordChangeForm(user=request.user)})
+        else:
+            messages.error(request, "Por favor corrige los errores.")
+    else:
+        form = PasswordChangeForm(user=request.user)
 
-        if not email:
-            # Validación si no ingresa correo
-            messages.error(request, "Por favor, ingresa un correo válido.")
-            return redirect("olvido_contrasena")
+    # Traducción de etiquetas al español
+    form.fields['old_password'].label = "Contraseña actual"
+    form.fields['new_password1'].label = "Nueva contraseña"
+    form.fields['new_password2'].label = "Confirmar nueva contraseña"
 
-        # Aquí mandas un correo al administrador avisando
-        send_mail(
-            subject="Solicitud de recuperación de contraseña",
-            message=f"El usuario con correo {email} solicitó recuperar su contraseña.",
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=["tu_correo_admin@gmail.com"],  # <-- cambia por el correo del admin
-            fail_silently=False,
-        )
-        
-        # Mensaje de éxito
-        messages.success(request, "Se ha enviado tu solicitud al administrador.")
-        return redirect("olvido_contrasena")  # o a otra página que quieras
-
-    return render(request, "core/olvido_contrasena.html")
+    return render(request, "core/cambiar_contrasena.html", {"form": form})
