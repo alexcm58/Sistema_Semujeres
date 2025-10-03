@@ -221,14 +221,10 @@ def admin_perfil(request):
     usuario = request.user
 
     if request.method == 'POST':
-        form = EditarPerfilForm(request.POST, instance=usuario)  # ⚠️ usa un form distinto
+        form = EditarPerfilForm(request.POST, instance=usuario)
         if form.is_valid():
             form.save()
-            messages.success(request, '✅ Tu perfil fue actualizado correctamente.')
-            return render(request, 'core/admin_perfil.html', {
-                'form': form,
-                'usuario': usuario,
-            })
+            messages.success(request, '✅ Perfil actualizado correctamente.')
         else:
             messages.error(request, '❌ Revisa los campos e inténtalo de nuevo.')
     else:
@@ -238,6 +234,7 @@ def admin_perfil(request):
         'form': form,
         'usuario': usuario,
     })
+
 
 from django import forms
 from .models import Usuario   # o tu modelo de usuario personalizado
