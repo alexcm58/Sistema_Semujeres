@@ -1,0 +1,107 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block title %}Cambiar Contraseña{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/admin_perfil.css' %}">
+<style>
+    .password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .password-wrapper input {
+        width: 100%;
+        padding-right: 40px; /* espacio para el icono */
+    }
+
+    .password-wrapper i {
+        position: absolute;
+        right: 10px;
+        cursor: pointer;
+        color: #888; /* gris formal */
+        font-size: 18px;
+    }
+
+    .password-wrapper i:hover {
+        color: #555; /* un gris más oscuro al pasar el mouse */
+    }
+
+    /* Estilo de botones */
+    .boton-accion {
+        display: block;
+        width: 100%;
+        max-width: 300px;
+        margin: 10px auto;
+        padding: 12px 0;
+        border-radius: 6px;
+        background-color: #621d28;
+        color: #fff;
+        font-weight: bold;
+        text-decoration: none;   /* 🚫 sin subrayado */
+        border: none;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .boton-accion:hover {
+        opacity: 0.9;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="formulario-admin">
+    <h2>Cambiar Contraseña</h2>
+    <form method="post" action="{% url 'cambiar_contrasena_admin' %}">
+        {% csrf_token %}
+        
+        <p>
+            {{ form.old_password.label_tag }}
+            <div class="password-wrapper">
+                {{ form.old_password }}
+                <i class="fa fa-eye" onclick="togglePassword('id_old_password', this)"></i>
+            </div>
+        </p>
+        
+        <p>
+            {{ form.new_password1.label_tag }}
+            <div class="password-wrapper">
+                {{ form.new_password1 }}
+                <i class="fa fa-eye" onclick="togglePassword('id_new_password1', this)"></i>
+            </div>
+        </p>
+        
+        <p>
+            {{ form.new_password2.label_tag }}
+            <div class="password-wrapper">
+                {{ form.new_password2 }}
+                <i class="fa fa-eye" onclick="togglePassword('id_new_password2', this)"></i>
+            </div>
+        </p>
+
+        <!-- Botón Actualizar -->
+        <button type="submit" class="boton-accion">Actualizar Contraseña</button>
+
+        <!-- Botón Volver justo debajo -->
+        <a href="{% url 'admin_perfil' %}" class="boton-accion">Volver al Perfil</a>
+    </form>
+</div>
+
+<script>
+    function togglePassword(id, el) {
+        const input = document.getElementById(id);
+        if (input.type === "password") {
+            input.type = "text";
+            el.classList.remove("fa-eye");
+            el.classList.add("fa-eye-slash");
+        } else {
+            input.type = "password";
+            el.classList.remove("fa-eye-slash");
+            el.classList.add("fa-eye");
+        }
+    }
+</script>
+{% endblock %}

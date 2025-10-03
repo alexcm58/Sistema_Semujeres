@@ -35,6 +35,8 @@ urlpatterns = [
     path('limpiar_respaldo/', views.limpiar_respaldo, name='limpiar_respaldo'),
     path('descargar_respaldo_zip/', views.descargar_respaldo_zip, name='descargar_respaldo_zip'),
     path("cambiar_contrasena/", views.cambiar_contrasena, name="cambiar_contrasena"),
+    path("cambiar_contrasena_admin/", views.cambiar_contrasena_admin, name="cambiar_contrasena_admin"),
+
 
     # Redireccionamiento por defecto
     path('', lambda request: redirect('login')),

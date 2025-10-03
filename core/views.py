@@ -204,23 +204,72 @@ def editar_usuario(request, usuario_id):
 
     return render(request, 'core/admin_editar_usuario.html', {'form': form, 'usuario': usuario})
 
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import user_passes_test
+from .forms import EditarUsuarioForm
+
+from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
+
 @user_passes_test(es_admin)
 def admin_perfil(request):
     usuario = request.user
 
     if request.method == 'POST':
-        form = EditarUsuarioForm(request.POST, instance=usuario)
+        form = EditarPerfilForm(request.POST, instance=usuario)  # ⚠️ usa un form distinto
         if form.is_valid():
             form.save()
-            messages.success(request, 'Usuario actualizado correctamente.')
-            return redirect('admin_perfil')  # Usar el name del path, no el archivo HTML
+            messages.success(request, '✅ Tu perfil fue actualizado correctamente.')
+            return render(request, 'core/admin_perfil.html', {
+                'form': form,
+                'usuario': usuario,
+            })
+        else:
+            messages.error(request, '❌ Revisa los campos e inténtalo de nuevo.')
     else:
-        form = EditarUsuarioForm(instance=usuario)
+        form = EditarPerfilForm(instance=usuario)
 
     return render(request, 'core/admin_perfil.html', {
         'form': form,
         'usuario': usuario,
     })
+
+from django import forms
+from .models import Usuario   # o tu modelo de usuario personalizado
+
+class EditarPerfilForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        # Solo campos seguros para perfil personal
+        fields = ['first_name', 'last_name', 'entidad_federativa', 'email']
+
+
+
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
+@user_passes_test(es_admin)
+def cambiar_contrasena_admin(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # mantiene la sesión
+            messages.success(request, 'Contraseña actualizada correctamente.')
+            return redirect('admin_perfil')
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+    return render(request, 'core/cambiar_contrasena_admin.html', {
+        'form': form
+    })
+
 
 
 # --- Verificación de rol admin
@@ -752,10 +801,41 @@ def reporte_anexos_pdf(request):
     response['Content-Disposition'] = f'attachment; filename="Reporte_Anexos_{fecha_str}.pdf"'
     return response
 
+
+
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
+from .models import AnexoHistorico
+
 @user_passes_test(es_admin)
 def vista_respaldo_anexos(request):
     respaldos = AnexoHistorico.objects.all().order_by('-fecha_subida')
-    return render(request, 'core/respaldo_anexos.html', {'respaldos': respaldos})
+
+    # Sacar años únicos en Python
+    fechas = AnexoHistorico.objects.values_list('fecha_subida', flat=True)
+    years = sorted(
+        {str(f.year) for f in fechas if f is not None},
+        reverse=True
+    )
+
+    # Filtro por año
+    raw_year = request.GET.get('year', '')
+    year_selected = ''
+
+    if raw_year and raw_year.isdigit():
+        respaldos = respaldos.filter(fecha_subida__year=int(raw_year))
+        year_selected = raw_year
+
+    return render(
+        request,
+        'core/respaldo_anexos.html',
+        {
+            'respaldos': respaldos,
+            'years': years,
+            'year_selected': year_selected,
+        }
+    )
+
 
 @user_passes_test(es_admin)
 def limpiar_respaldo(request):

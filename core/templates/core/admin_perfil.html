@@ -3,37 +3,68 @@
 
 {% block title %}Perfil del Administrador{% endblock %}
 
-
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'core/css/admin_perfil.css' %}">
+<style>
+    .formulario-admin {
+        max-width: 500px;   /* Ancho máximo del formulario */
+        margin: 0 auto;     /* Centrar formulario */
+    }
+
+    .boton-accion {
+        display: block;            /* Hace que ocupe todo el ancho disponible */
+        width: 100%;               /* Igual al ancho de los inputs */
+        max-width: 300px;          /* Límite para que no se vea enorme */
+        margin: 10px auto;         /* Centrado horizontal */
+        padding: 12px 0;           /* Alto del botón */
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;           /* Más grande que los inputs */
+        text-align: center;        /* Centrar texto y emoji */
+        background-color: #621d28;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .boton-accion:hover {
+        opacity: 0.9;
+    }
+
+    .separador-boton {
+        margin: 20px 0;  
+        text-align: center;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="formulario-admin">
     <h2>Editar Perfil</h2>
-    <form method="post">
+    <form method="post" action="{% url 'admin_perfil' %}">
         {% csrf_token %}
+        <p>{{ form.username.label_tag }} {{ form.username }}</p>
+        <p>{{ form.entidad_federativa.label_tag }} {{ form.entidad_federativa }}</p>
+        <p>{{ form.correo.label_tag }} {{ form.correo }}</p>
+        <p>{{ form.rol.label_tag }} {{ form.rol }}</p>
+        
+        <!-- Botón Cambiar Contraseña -->
+        <div class="separador-boton">
+            <a href="{% url 'cambiar_contrasena_admin' %}" class="boton-accion">
+                 Cambiar Contraseña
+            </a>
+        </div>
 
-        <p>
-            {{ form.username.label_tag }}
-            {{ form.username }}
-        </p>
-        <p>
-            {{ form.entidad_federativa.label_tag }}
-            {{ form.entidad_federativa }}
-        </p>
-        <p>
-            {{ form.correo.label_tag }}
-            {{ form.correo }}
-        </p>
-        <p>
-            {{ form.rol.label_tag }}
-            {{ form.rol }}
-        </p>
-    
-
-        <button type="submit" class="boton-accion">Guardar Cambios</button>
+        <!-- Botón Guardar Cambios -->
+        <div class="separador-boton">
+            <button type="submit" class="boton-accion">
+                 Guardar Cambios
+            </button>
+        </div>
     </form>
 </div>
+
+<hr style="margin: 40px 0;">
 
 {% endblock %}

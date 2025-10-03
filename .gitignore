@@ -31,3 +31,5 @@ staticfiles/
 
 # Configuración local
 .env
+# Ignorar base de datos SQLite
+db.sqlite3
