@@ -60,14 +60,23 @@
         .success {
             background-color: #d4edda;
             color: #155724;
+            border: 1px solid #c3e6cb;
         }
         .error {
             background-color: #f8d7da;
             color: #721c24;
+            border: 1px solid #f5c6cb;
         }
         .input-group {
             position: relative;
             margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
         }
         .input-group input {
             width: 100%;
@@ -79,7 +88,7 @@
         .input-group i {
             position: absolute;
             right: 12px;
-            top: 50%;
+            top: 65%;
             transform: translateY(-50%);
             cursor: pointer;
             color: #666;
@@ -117,7 +126,7 @@
     <div class="container">
         <h2>Cambiar contraseña</h2>
 
-        <!-- Mensajes -->
+        <!-- Mensajes de éxito o error -->
         {% if messages %}
             {% for message in messages %}
                 <div class="message {% if message.tags == 'error' %}error{% else %}success{% endif %}">
@@ -130,14 +139,17 @@
         <form method="post">
             {% csrf_token %}
             <div class="input-group">
+                <label for="id_old_password">Contraseña actual</label>
                 {{ form.old_password }}
                 <i class="fa fa-eye" onclick="togglePassword('id_old_password', this)"></i>
             </div>
             <div class="input-group">
+                <label for="id_new_password1">Nueva contraseña</label>
                 {{ form.new_password1 }}
                 <i class="fa fa-eye" onclick="togglePassword('id_new_password1', this)"></i>
             </div>
             <div class="input-group">
+                <label for="id_new_password2">Confirmar nueva contraseña</label>
                 {{ form.new_password2 }}
                 <i class="fa fa-eye" onclick="togglePassword('id_new_password2', this)"></i>
             </div>

@@ -222,19 +222,28 @@ def admin_perfil(request):
         'usuario': usuario,
     })
 
+
+# --- Verificación de rol admin
+def es_admin(user):
+    return user.is_authenticated and (user.is_superuser or user.rol == 'admin')
+
+
+# --- Función para sincronizar anexos con todos los usuarios
 def sincronizar_documentos_por_usuario():
     usuarios = Usuario.objects.all()
     anexos = AnexoRequerido.objects.all()
 
     for usuario in usuarios:
         for anexo in anexos:
-            Documento.objects.get_or_create(usuario=usuario, anexo=anexo)
+            Documento.objects.get_or_create(
+                usuario=usuario,
+                anexo=anexo,
+                defaults={
+                    "estado": "pendiente",
+                    "observaciones": ""
+                }
+            )
 
-
-    anexo = get_object_or_404(AnexoRequerido, id=anexo_id)
-    anexo.delete()
-    Documento.objects.filter(anexo=anexo).delete()  # Limpieza relacionada
-    return redirect('admin_anexos')
 
 #REPORTES DE DOCUMENTOS 
 
@@ -583,7 +592,8 @@ def reporte_entidad_pdf(request, entidad_id):
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     return response
 
-#ANEXOS 
+
+# --- Vista principal de administración de anexos
 @user_passes_test(es_admin)
 def admin_anexos(request):
     anexos = AnexoRequerido.objects.all().order_by('nombre')
@@ -592,8 +602,11 @@ def admin_anexos(request):
         form = AnexoForm(request.POST)
         if form.is_valid():
             form.save()
-            sincronizar_documentos_por_usuario()  # ⬅️ importante
-            return redirect('admin_anexos')
+            sincronizar_documentos_por_usuario()  # 🔥 sincronización total
+            messages.success(request, "✅ El documento requerido fue agregado correctamente.")
+            return redirect('admin_anexos')  # evita reenvíos dobles
+        else:
+            messages.error(request, "❌ Ocurrió un error al guardar el documento.")
     else:
         form = AnexoForm()
 
@@ -602,24 +615,27 @@ def admin_anexos(request):
         'form': form,
     })
 
+
+# --- Eliminar un anexo
 @user_passes_test(es_admin)
 def eliminar_anexo(request, anexo_id):
     try:
         anexo = AnexoRequerido.objects.get(id=anexo_id)
         anexo.delete()
-        messages.success(request, "El anexo fue eliminado correctamente.")
+        messages.success(request, "✅ El anexo fue eliminado correctamente.")
     except AnexoRequerido.DoesNotExist:
-        messages.error(request, "El anexo no existe.")
+        messages.error(request, "❌ El anexo no existe.")
     return redirect('admin_anexos')
 
 
+# --- Eliminar todos los anexos
 @user_passes_test(es_admin)
 def eliminar_todos_anexos(request):
     AnexoRequerido.objects.all().delete()
-    messages.success(request, "Todos los anexos han sido eliminados.")
+    messages.success(request, "✅ Todos los anexos han sido eliminados.")
     return redirect('admin_anexos')
 
-@user_passes_test(es_admin)
+
 def limpiar_anexos_subidos(request):
     if request.method == 'POST':
         documentos = Documento.objects.all()
@@ -790,26 +806,30 @@ def descargar_respaldo_zip(request):
     response['Content-Disposition'] = 'attachment; filename=respaldo_anexos.zip'
     return response
 
-import random, string
-from django.core.mail import send_mail
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Usuario  # tu modelo de usuario
+
+
+
 import random
 import string
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from .models import Usuario  # asegúrate de importar tu modelo personalizado
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from .models import Usuario  # tu modelo de usuario
 
+# 🔑 Función para generar contraseñas aleatorias
 def generar_contrasena(longitud=10):
-    """Genera contraseña aleatoria provisional"""
+    """Genera una contraseña aleatoria provisional"""
     caracteres = string.ascii_letters + string.digits
     return ''.join(random.choice(caracteres) for _ in range(longitud))
 
+
+# 📌 Recuperación de contraseña por correo
 def olvido_contrasena(request):
     if request.method == "POST":
-        correo = request.POST.get("correo")  # 👈 asegúrate que en el form el campo se llame 'correo'
+        correo = request.POST.get("correo")  # 👈 en tu form el input debe llamarse 'correo'
 
         try:
             usuario = Usuario.objects.get(correo=correo)
@@ -829,37 +849,32 @@ Por favor, cambia tu contraseña después de iniciar sesión.
             send_mail(
                 subject="Recuperación de contraseña - SEMUJERES",
                 message=mensaje,
-                from_email="asemujeres@gmail.com",  # 👈 usa tu correo configurado en settings.py
+                from_email="asemujeres@gmail.com",  # ⚠️ cámbialo por el correo configurado en settings.py
                 recipient_list=[usuario.correo],
                 fail_silently=False,
             )
 
-            messages.success(request, "Se envió una nueva contraseña a tu correo.")
+            messages.success(request, "✅ Se envió una nueva contraseña a tu correo.")
             return redirect("login")
 
         except Usuario.DoesNotExist:
-            messages.error(request, "El correo no está registrado.")
+            messages.error(request, "❌ El correo no está registrado.")
 
     return render(request, "core/olvido_contrasena.html")
 
 
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
-from django.shortcuts import render
-
+# 📌 Cambio de contraseña dentro del sistema
 @login_required
 def cambiar_contrasena(request):
     if request.method == "POST":
         form = PasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)  # 🔑 Para que no cierre sesión
-            messages.success(request, "Tu contraseña se cambió correctamente.")
+            update_session_auth_hash(request, user)  # 🔑 Mantener sesión activa
+            messages.success(request, "✅ Tu contraseña se cambió correctamente.")
             return render(request, "core/cambiar_contrasena.html", {"form": PasswordChangeForm(user=request.user)})
         else:
-            messages.error(request, "Por favor corrige los errores.")
+            messages.error(request, "❌ Corrige los errores del formulario.")
     else:
         form = PasswordChangeForm(user=request.user)
 

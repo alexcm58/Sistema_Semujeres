@@ -1,0 +1,24 @@
+# Core de Django
+Django>=4.2,<5.0
+
+# Manejo de imágenes (para logos, PDFs, uploads)
+Pillow==11.2.1
+
+# Generación de PDFs
+reportlab==4.4.2
+
+# Compatibilidad de strings
+charset-normalizer==3.4.2
+
+# Conector MySQL/MariaDB
+mysqlclient==2.1.1
+
+# Procesamiento de datos
+pandas>=2.0.0,<3.0
+numpy>=1.25.0,<2.0
+
+# Gráficos
+matplotlib>=3.8.0,<4.0
+
+# Soporte de archivos y compresión
+python-decouple>=3.8   # (si usas variables de entorno)

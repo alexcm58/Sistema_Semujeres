@@ -57,13 +57,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'semujeres_sistema.wsgi.application'
 
-# Base de datos
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'semujer_db',          # Nombre de tu base de datos en MariaDB
+        'USER': 'semujer_user',        # Usuario que creaste
+        'PASSWORD': 'Semujer123!',     # Contraseña del usuario
+        'HOST': 'localhost',           # Si MariaDB está en el mismo servidor
+        'PORT': '3306',                # Puerto por defecto de MySQL/MariaDB
+        'OPTIONS': {
+            'charset': 'utf8mb4',      # Soporte de acentos y emojis
+        }
     }
 }
+
 
 # Contraseñas
 AUTH_PASSWORD_VALIDATORS = [

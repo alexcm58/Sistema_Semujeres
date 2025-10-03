@@ -6,7 +6,6 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'core/css/admin_anexos.css' %}">
 <style>
-/* Toast centrado y estilizado */
 .toast {
     position: fixed;
     top: 20px;
@@ -30,12 +29,7 @@
 .toast-error   { background-color: #dc3545; }
 .toast-warning { background-color: #ffc107; color: #000; }
 .toast-info    { background-color: #17a2b8; }
-
-.toast .cerrar {
-    margin-left: 15px;
-    cursor: pointer;
-    font-weight: bold;
-}
+.toast .cerrar { margin-left: 15px; cursor: pointer; font-weight: bold; }
 </style>
 {% endblock %}
 
@@ -44,7 +38,7 @@
 
     <h2 class="titulo-seccion titulo-centrado">Administración de Documentos Requeridos</h2>
 
-    <!-- Contenedor de toasts -->
+    <!-- Toasts -->
     <div id="toast-container">
         {% if messages %}
             {% for message in messages %}
@@ -105,7 +99,7 @@
         {% endif %}
     </div>
 
-    <!-- Botones de acciones -->
+    <!-- Botones -->
     <div class="contenedor-botones" style="display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
 
         <!-- Limpiar anexos subidos -->
@@ -128,7 +122,6 @@
             </button>
         </form>
 
-
         <!-- Ver anexos respaldados -->
         <a href="{% url 'vista_respaldo_anexos' %}" class="btn btn-info btn-sm"
            style="background-color: #621d28; border-color: #621d28; padding: 10px 20px; color: white; border-radius: 8px; text-decoration: none;">
@@ -142,7 +135,6 @@
 
 {% block extra_js %}
 <script>
-// Ocultar automáticamente los toasts después de 5 segundos
 setTimeout(() => {
     const toasts = document.querySelectorAll('.toast');
     toasts.forEach(t => t.remove());
