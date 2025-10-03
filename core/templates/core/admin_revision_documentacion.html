@@ -32,12 +32,19 @@
         {% csrf_token %}
 
         {% if entidad_seleccionada %}
-        <div class="barra-contenedor">
-            <p>Documentos validados: {{ porcentaje_validados }}%</p>
-            <div class="barra-progreso">
-                <div class="barra-relleno" style="width:{{porcentaje_validados}}%"></div>
+            <div class="barra-contenedor">
+                <p class="texto-porcentaje">Documentos validados: {{ porcentaje_validados }}%</p>
+                <div class="barra-progreso">
+                    <div class="barra-relleno
+                        {% if porcentaje_validados < 33 %}
+                            rojo
+                        {% elif porcentaje_validados < 66 %}
+                            amarillo
+                        {% else %}
+                            verde
+                        {% endif %}" style="width:{{ porcentaje_validados }}%"></div>
+                </div>
             </div>
-        </div>
         {% endif %}
 
         <div class="table-section">

@@ -7,68 +7,6 @@
     <link rel="stylesheet" href="{% static 'core/css/usuario_dashboard.css' %}">
     <link rel="icon" href="{% static 'core/img/zaclogo-removebg-preview.png' %}" type="image/png">
     <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
-    <style>
-        footer {
-            background-color: #621d28;
-            color: #ffffff;
-            padding: 15px 10px 5px;
-            margin-top: 20px;
-            font-size: 12px;
-        }
-        .footer-container {
-            max-width: 950px;
-            margin: auto;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .footer-col {
-            flex: 1 1 220px;
-            text-align: center;
-        }
-        .footer-col h3 {
-            color: #f1f1f1;
-            margin-bottom: 5px;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-        .footer-col p, .footer-col li, .footer-col a {
-            font-size: 12px;
-            color: #f1f1f1;
-            text-decoration: none;
-            line-height: 1.4;
-            margin: 2px 0;
-        }
-        .footer-col ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .footer-logo img {
-            max-width: 160px;
-            margin-bottom: 6px;
-        }
-        .social-icons {
-            margin-top: 5px;
-        }
-        .social-icons a {
-            margin: 0 5px;
-            font-size: 14px;
-            color: #ffffff;
-            transition: opacity 0.3s;
-        }
-        .social-icons a:hover {
-            opacity: 0.7;
-        }
-        .bottom-bar {
-            margin-top: 8px;
-            padding: 5px;
-            text-align: center;
-            font-size: 11px;
-            background-color: #621d28;
-        }
-    </style>
 </head>
 <body>
 
@@ -80,7 +18,7 @@
         </div>
 
         <div class="barra-derecha">
-            <a href="{% url 'cambiar_contrasena' %}" class="boton-salir">PERFIL</a>
+            <a href="{% url 'cambiar_contrasena' %}" class="boton-salir">CAMBIAR CONTRASEÑA</a>
             <a href="{% url 'logout' %}" class="boton-salir">SALIR</a>
         </div>
     </div>
@@ -94,20 +32,20 @@
     <main class="contenido">
         <h2>SUBIR DOCUMENTOS</h2>
 
-        <div class="barra-contenedor">
-            <p>Documentos validados: {{ porcentaje_validados }}%</p>
-            <div class="barra-progreso">
-                <div class="barra-relleno 
-                    {% if porcentaje_validados < 33 %}
-                        rojo
-                    {% elif porcentaje_validados < 66 %}
-                        amarillo
-                    {% else %}
-                        verde
-                    {% endif %}" style="width:{{ porcentaje_validados }}%">
+            <div class="barra-contenedor-dashboard">
+                <p class="texto-porcentaje-dashboard">Documentos validados: {{ porcentaje_validados }}%</p>
+                <div class="barra-progreso-dashboard">
+                    <div class="barra-relleno-dashboard
+                        {% if porcentaje_validados < 33 %}
+                            rojo
+                        {% elif porcentaje_validados < 66 %}
+                            amarillo
+                        {% else %}
+                            verde
+                        {% endif %}" style="width:{{ porcentaje_validados }}%"></div>
                 </div>
             </div>
-        </div>
+
 
         <!-- Formulario para subir documentos -->
         <form method="post" enctype="multipart/form-data">
@@ -139,18 +77,25 @@
                         </td>
                         <td>{{ doc.observaciones|default:"—" }}</td>
                         <td>{{ doc.get_estado_display }}</td>
+                        
                         <td colspan="2">
-                            {% if not doc.archivo %}
-                                <label for="archivo_{{ doc.id }}" class="upload-icon">
-                                    <img src="{% static 'core/img/arrow_upload.png' %}" alt="Subir archivo" width="24" height="24" />
-                                </label>
-                                <input type="file" id="archivo_{{ doc.id }}" name="documento_{{ doc.id }}" accept=".pdf" class="input-oculto">
+                            {% if not doc.archivo or doc.estado == 'rechazado' %}
+                                <div class="subida-contenedor">
+                                    <label for="archivo_{{ doc.id }}" class="upload-icon">
+                                        <img src="{% static 'core/img/arrow_upload.png' %}" alt="Subir archivo" width="24" height="24" />
+                                    </label>
+                                    <input type="file" id="archivo_{{ doc.id }}" name="documento_{{ doc.id }}" accept=".pdf" class="input-oculto">
+                                    {% if doc.archivo and doc.estado == 'rechazado' %}
+                                        <p class="texto-rechazado">Archivo rechazado. Vuelva a subir.</p>
+                                    {% endif %}
+                                </div>
                             {% else %}
                                 <a href="{{ doc.archivo.url }}" target="_blank">
                                     <img src="{% static 'core/img/visibility.png' %}" alt="Ver archivo" width="24" height="24" />
                                 </a>
                             {% endif %}
                         </td>
+
                     </tr>
                     {% empty %}
                     <tr>
@@ -168,10 +113,12 @@
 
     <!-- Footer institucional compacto -->
     <footer>
+       
         <div class="footer-container">
             <!-- Columna 1: Logo + Dirección -->
             <div class="footer-col footer-logo">
                 <img src="{% static 'core/img/logo_labsol.png' %}" alt="Logo Zacatecas">
+                <img src="{% static 'core/img/GPLv3_Logo.svg.png' %}" alt="Logo Zacatecas">
                 <p>Circuito Cerro del Gato s/n<br>Ciudad Administrativa</p>
                 <p>CP 98160, Zacatecas, Zac.</p>
             </div>
@@ -205,6 +152,28 @@
             <p>&copy; 2025 Gobierno del Estado de Zacatecas - Todos los derechos reservados</p>
         </div>
     </footer>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInputs = document.querySelectorAll('.input-oculto');
+
+    fileInputs.forEach(input => {
+        input.addEventListener('change', () => {
+            const label = document.querySelector(`label[for="${input.id}"]`);
+
+            if (input.files.length > 0) {
+                // Cambia color del círculo si hay archivo seleccionado
+                label.style.backgroundColor = '#4CAF50'; // verde
+            } else {
+                // Vuelve al color original si no hay archivo
+                label.style.backgroundColor = '#f0f0f0';
+            }
+        });
+    });
+});
+</script>
+
 
 </body>
 </html>

@@ -72,7 +72,6 @@ def cerrar_sesion(request):
     return redirect('login')  # nombre de la URL del login
 
 
-
 @user_passes_test(es_admin)
 def admin_revision_documentacion(request):
     entidades = Usuario.objects.filter(rol='usuario')

@@ -94,55 +94,63 @@ main {
 
 /* Estilo para el footer */
 footer {
-    background-color: #541722;
-    color: white;
-    padding: 30px 40px 10px 40px;
-    font-size: 14px;
-}
-
-.footer-contenido {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 40px;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-/* Equipo */
-.footer-equipo h3,
-.footer-info h3 {
-    font-size: 16px;
-    margin-bottom: 10px;
-    font-weight: bold;
-    border-bottom: 2px solid #7a2432;
-    display: inline-block;
-    padding-bottom: 5px;
-}
-
-.footer-equipo ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-equipo li {
-    margin: 6px 0;
-    font-size: 14px;
-}
-
-/* Info */
-.footer-info p {
-    margin: 5px 0;
-    font-size: 13px;
-}
-
-/* Línea inferior */
-.footer-bottom {
-    text-align: center;
-    margin-top: 20px;
-    border-top: 1px solid #7a2432;
-    padding-top: 10px;
-    font-size: 12px;
-    color: #ddd;
-}
+            background-color: #ffffffff;
+            color: #ffffff;
+            padding: 15px 10px 5px; /* mucho más compacto */
+            margin-top: 20px;
+            font-size: 12px;
+        }
+        .footer-container {
+            max-width: 950px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .footer-col {
+            flex: 1 1 220px;
+            text-align: center;
+        }
+        .footer-col h3 {
+            color: #090909ff;
+            margin-bottom: 5px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .footer-col p, .footer-col li, .footer-col a {
+            font-size: 12px;
+            color: #111010ff;
+            text-decoration: none;
+            line-height: 1.4;
+            margin: 2px 0;
+        }
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer-logo img {
+            max-width: 160px; /* logo más pequeño aún */
+            margin-bottom: 6px;
+        }
+        .social-icons {
+            margin-top: 5px;
+        }
+        .social-icons a {
+            margin: 0 5px;
+            font-size: 14px;
+            color: #1a1717ff;
+            transition: opacity 0.3s;
+        }
+        .social-icons a:hover {
+            opacity: 0.7;
+        }
+        .bottom-bar {
+            margin-top: 8px;
+            padding: 5px;
+            text-align: center;
+            font-size: 11px;
+            background-color: #ffffffff;
+        }

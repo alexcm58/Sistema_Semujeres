@@ -219,3 +219,15 @@ table td {
         min-width: 600px;
     }
 }
+
+.barra-relleno.rojo {
+    background-color: #e74c3c; /* rojo */
+}
+
+.barra-relleno.amarillo {
+    background-color: #f1c40f; /* amarillo */
+}
+
+.barra-relleno.verde {
+    background-color: #4CAF50; /* verde */
+}

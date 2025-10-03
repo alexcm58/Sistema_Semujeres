@@ -7,62 +7,7 @@
     <link rel="stylesheet" href="{% static 'core/css/login.css' %}">
     <link rel="icon" href="{% static 'core/img/zaclogo-removebg-preview.png' %}" type="image/png">
     <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
-    <style>
-        footer {
-            background-color: #621d28;
-            color: #ffffff;
-            padding: 15px 10px 5px;
-            margin-top: 30px;
-            font-size: 12px;
-        }
-        .footer-container {
-            max-width: 1000px;
-            margin: auto;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .footer-col {
-            flex: 1 1 200px;
-            text-align: center;
-        }
-        .footer-col h3 {
-            color: #f1f1f1;
-            margin-bottom: 6px;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-        .footer-col p, .footer-col li {
-            font-size: 12px;
-            margin: 2px 0;
-            line-height: 1.4;
-        }
-        .footer-col ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .footer-logo img {
-            max-width: 160px;
-            margin-bottom: 8px;
-        }
-        .social-icons {
-            margin-top: 5px;
-        }
-        .social-icons a {
-            margin: 0 4px;
-            font-size: 14px;
-            color: #ffffff;
-        }
-        .bottom-bar {
-            margin-top: 8px;
-            padding: 6px;
-            text-align: center;
-            font-size: 11px;
-            background-color: #621d28;
-        }
-    </style>
+
 </head>
 <body>
 
@@ -112,13 +57,17 @@
 
     <!-- Footer institucional compacto -->
     <footer>
+       
         <div class="footer-container">
+            <!-- Columna 1: Logo + Dirección -->
             <div class="footer-col footer-logo">
                 <img src="{% static 'core/img/logo_labsol.png' %}" alt="Logo Zacatecas">
-                <p>Circuito Cerro del Gato s/n</p>
-                <p>Ciudad Administrativa</p>
+                <img src="{% static 'core/img/GPLv3_Logo.svg.png' %}" alt="Logo Zacatecas">
+                <p>Circuito Cerro del Gato s/n<br>Ciudad Administrativa</p>
                 <p>CP 98160, Zacatecas, Zac.</p>
             </div>
+
+            <!-- Columna 2: Equipo -->
             <div class="footer-col">
                 <h3>Equipo</h3>
                 <ul>
@@ -127,6 +76,8 @@
                     <li>Karla Guadalupe Rocha Quezada</li>
                 </ul>
             </div>
+
+            <!-- Columna 3: Contacto -->
             <div class="footer-col">
                 <h3>Contacto</h3>
                 <p><i class="fa-solid fa-phone"></i> 492 491 5000</p>
@@ -139,6 +90,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Barra inferior -->
         <div class="bottom-bar">
             <p>&copy; 2025 Gobierno del Estado de Zacatecas - Todos los derechos reservados</p>
         </div>
