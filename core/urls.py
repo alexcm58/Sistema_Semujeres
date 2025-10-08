@@ -12,7 +12,6 @@ urlpatterns = [
     path('revision/', views.admin_revision_documentacion, name='admin_revision_documentacion'),
     path('crear_usuario/', views.admin_crear_usuario, name='admin_crear_usuario'),
     path('gestion_usuarios/', views.admin_gestion_usuarios, name='admin_gestion_usuarios'),
-    path('lista_usuarios/', views.admin_lista_usuarios, name='admin_lista_usuarios'),
     path('eliminar_usuario/<int:usuario_id>/', views.admin_eliminar_usuario, name='eliminar_usuario'),
     path('editar_usuario/<int:usuario_id>/', views.editar_usuario, name='admin_editar_usuario'),
     path('perfil_admin/', views.admin_perfil, name='admin_perfil'),
@@ -35,6 +34,8 @@ urlpatterns = [
     path('limpiar_respaldo/', views.limpiar_respaldo, name='limpiar_respaldo'),
     path('descargar_respaldo_zip/', views.descargar_respaldo_zip, name='descargar_respaldo_zip'),
     path("cambiar_contrasena/", views.cambiar_contrasena, name="cambiar_contrasena"),
+    path("cambiar_contrasena_admin/", views.cambiar_contrasena_admin, name="cambiar_contrasena_admin"),
+
 
     # Redireccionamiento por defecto
     path('', lambda request: redirect('login')),

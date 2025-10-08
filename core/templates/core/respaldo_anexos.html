@@ -54,6 +54,18 @@
     cursor: pointer;
     font-weight: bold;
 }
+
+/* Filtro de años */
+.filtro-anios {
+    margin: 20px 0;
+    text-align: center;
+}
+.filtro-anios select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
 </style>
 {% endblock %}
 
@@ -72,6 +84,21 @@
             </div>
             {% endfor %}
         {% endif %}
+    </div>
+
+    <!-- Filtro por año -->
+    <div class="filtro-anios">
+        <form method="get">
+            <label for="year">Filtrar por año:</label>
+            <select name="year" id="year" onchange="this.form.submit()">
+                <option value="">Todos</option>
+                {% for y in years %}
+                  <option value="{{ y }}" {% if year_selected == y|stringformat:"s" %}selected{% endif %}>
+                      {{ y }}
+                  </option>
+                {% endfor %}
+            </select>
+        </form>
     </div>
 
     <!-- Tabla con anexos respaldados -->

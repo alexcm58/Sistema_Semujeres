@@ -25,11 +25,21 @@
             <a href="{% url 'logout' %}" class="boton-salir">Salir</a>
         </div>
     </div>
-     
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+    
+<!-- 🔹 Bloque para mostrar mensajes -->
+    {% if messages %}
+        <div class="mensajes">
+            {% for message in messages %}
+                <div class="alerta">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    </body>
+
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
 
     <!-- Footer institucional compacto -->
     <footer>
@@ -73,5 +83,4 @@
         </div>
     </footer>
 
-</body>
 </html>

@@ -17,7 +17,7 @@ from django.core.files.base import ContentFile
 # Modelos y formularios del proyecto
 # --------------------
 from .models import Documento, Usuario, AnexoRequerido, AnexoHistorico
-from .forms import CrearUsuarioForm, EditarUsuarioForm, AnexoForm
+from .forms import CrearUsuarioForm, EditarUsuarioForm, AnexoForm, EditarPerfilAdminForm
 from .models import AnexoRequerido
 # --------------------
 # Python estándar
@@ -70,7 +70,6 @@ def es_admin(user):
 def cerrar_sesion(request):
     logout(request)
     return redirect('login')  # nombre de la URL del login
-
 
 @user_passes_test(es_admin)
 def admin_revision_documentacion(request):
@@ -168,25 +167,16 @@ def admin_gestion_usuarios(request):
     })
 
 @user_passes_test(es_admin)
-def admin_lista_usuarios(request):
-    usuarios = Usuario.objects.all()
-
-
-    return render(request, 'core/admin_lista_usuarios.html', {
-            'entidades': usuarios,
-        })
-
-@user_passes_test(es_admin)
 def admin_eliminar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, id=usuario_id)
 
     if request.method == 'POST':
         usuario.delete()
         messages.success(request, 'Usuario eliminado correctamente.')
-        return redirect('admin_lista_usuarios')
+        return redirect('admin_gestion_usuarios')
     
     # En caso de acceso por GET (opcional, puede redirigir o lanzar error)
-    return redirect('admin_lista_usuarios')
+    return redirect('admin_gestion_usuaarios')
 
 @user_passes_test(es_admin)
 def editar_usuario(request, usuario_id):
@@ -197,35 +187,73 @@ def editar_usuario(request, usuario_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Usuario actualizado correctamente.')
-            return redirect('admin_lista_usuarios')
+            return redirect('admin_gestion_usuarios')
     else:
         form = EditarUsuarioForm(instance=usuario)
 
     return render(request, 'core/admin_editar_usuario.html', {'form': form, 'usuario': usuario})
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import user_passes_test
+from .forms import EditarUsuarioForm
+from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
 
 @user_passes_test(es_admin)
 def admin_perfil(request):
     usuario = request.user
 
     if request.method == 'POST':
-        form = EditarUsuarioForm(request.POST, instance=usuario)
+        form = EditarPerfilAdminForm(request.POST, instance=usuario)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Usuario actualizado correctamente.')
-            return redirect('admin_perfil')  # Usar el name del path, no el archivo HTML
+            messages.success(request, '✅ Tu perfil fue actualizado correctamente.')
+            return redirect('admin_perfil')
+        else:
+            messages.error(request, '❌ Revisa los campos e inténtalo de nuevo.')
     else:
-        form = EditarUsuarioForm(instance=usuario)
+        form = EditarPerfilAdminForm(instance=usuario)
 
     return render(request, 'core/admin_perfil.html', {
         'form': form,
         'usuario': usuario,
     })
 
+from django import forms
+from .models import Usuario   # o tu modelo de usuario personalizado
+
+class EditarPerfilForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        # Solo campos seguros para perfil personal
+        fields = ['first_name', 'last_name', 'entidad_federativa', 'email']
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
+@user_passes_test(es_admin)
+def cambiar_contrasena_admin(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # mantiene la sesión
+            messages.success(request, 'Contraseña actualizada correctamente.')
+            return redirect('admin_perfil')
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+    return render(request, 'core/cambiar_contrasena_admin.html', {
+        'form': form
+    })
 
 # --- Verificación de rol admin
 def es_admin(user):
     return user.is_authenticated and (user.is_superuser or user.rol == 'admin')
-
 
 # --- Función para sincronizar anexos con todos los usuarios
 def sincronizar_documentos_por_usuario():
@@ -243,9 +271,7 @@ def sincronizar_documentos_por_usuario():
                 }
             )
 
-
 #REPORTES DE DOCUMENTOS 
-
 @user_passes_test(es_admin)
 def reporte_general_pdf(request):
     buffer = BytesIO()
@@ -591,7 +617,6 @@ def reporte_entidad_pdf(request, entidad_id):
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
     return response
 
-
 # --- Vista principal de administración de anexos
 @user_passes_test(es_admin)
 def admin_anexos(request):
@@ -626,7 +651,6 @@ def eliminar_anexo(request, anexo_id):
         messages.error(request, "❌ El anexo no existe.")
     return redirect('admin_anexos')
 
-
 # --- Eliminar todos los anexos
 @user_passes_test(es_admin)
 def eliminar_todos_anexos(request):
@@ -634,7 +658,7 @@ def eliminar_todos_anexos(request):
     messages.success(request, "✅ Todos los anexos han sido eliminados.")
     return redirect('admin_anexos')
 
-
+@user_passes_test(es_admin)
 def limpiar_anexos_subidos(request):
     if request.method == 'POST':
         documentos = Documento.objects.all()
@@ -655,7 +679,6 @@ def limpiar_anexos_subidos(request):
             messages.info(request, "ℹ️ No había archivos para limpiar.")
         return redirect('admin_anexos')
     return redirect('admin_anexos')
-
 
 @user_passes_test(es_admin)
 def respaldar_anexos(request):
@@ -689,7 +712,6 @@ def respaldar_anexos(request):
             messages.info(request, "ℹ️ No había archivos nuevos para respaldar.")
         return redirect('admin_anexos')
     return redirect('admin_anexos')
-
 
 # Generar reporte de anexos
 @user_passes_test(es_admin)
@@ -751,10 +773,38 @@ def reporte_anexos_pdf(request):
     response['Content-Disposition'] = f'attachment; filename="Reporte_Anexos_{fecha_str}.pdf"'
     return response
 
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
+from .models import AnexoHistorico
+
 @user_passes_test(es_admin)
 def vista_respaldo_anexos(request):
     respaldos = AnexoHistorico.objects.all().order_by('-fecha_subida')
-    return render(request, 'core/respaldo_anexos.html', {'respaldos': respaldos})
+
+    # Sacar años únicos en Python
+    fechas = AnexoHistorico.objects.values_list('fecha_subida', flat=True)
+    years = sorted(
+        {str(f.year) for f in fechas if f is not None},
+        reverse=True
+    )
+
+    # Filtro por año
+    raw_year = request.GET.get('year', '')
+    year_selected = ''
+
+    if raw_year and raw_year.isdigit():
+        respaldos = respaldos.filter(fecha_subida__year=int(raw_year))
+        year_selected = raw_year
+
+    return render(
+        request,
+        'core/respaldo_anexos.html',
+        {
+            'respaldos': respaldos,
+            'years': years,
+            'year_selected': year_selected,
+        }
+    )
 
 @user_passes_test(es_admin)
 def limpiar_respaldo(request):
@@ -777,7 +827,6 @@ def limpiar_respaldo(request):
         messages.success(request, f"✅ Se han eliminado {count} archivos y registros de respaldo correctamente.")
         return redirect('vista_respaldo_anexos')
     return redirect('vista_respaldo_anexos')
-
 
 @user_passes_test(es_admin)
 def descargar_respaldo_zip(request):
@@ -805,9 +854,6 @@ def descargar_respaldo_zip(request):
     response['Content-Disposition'] = 'attachment; filename=respaldo_anexos.zip'
     return response
 
-
-
-
 import random
 import string
 from django.core.mail import send_mail
@@ -823,7 +869,6 @@ def generar_contrasena(longitud=10):
     """Genera una contraseña aleatoria provisional"""
     caracteres = string.ascii_letters + string.digits
     return ''.join(random.choice(caracteres) for _ in range(longitud))
-
 
 # 📌 Recuperación de contraseña por correo
 def olvido_contrasena(request):
@@ -860,7 +905,6 @@ Por favor, cambia tu contraseña después de iniciar sesión.
             messages.error(request, "❌ El correo no está registrado.")
 
     return render(request, "core/olvido_contrasena.html")
-
 
 # 📌 Cambio de contraseña dentro del sistema
 @login_required

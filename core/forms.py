@@ -5,7 +5,6 @@ from .models import Usuario
 from .models import AnexoRequerido
 
 # forms.py
-
 class CrearUsuarioForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     confirm_password = forms.CharField(widget=forms.PasswordInput, label="Confirmar contraseña")
@@ -40,6 +39,11 @@ class EditarUsuarioForm(forms.ModelForm):
             'rol',
             'is_active',
         ]
+        
+class EditarPerfilAdminForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['username', 'entidad_federativa', 'correo']
 
 
 class AnexoForm(forms.ModelForm):
@@ -51,7 +55,6 @@ class AnexoForm(forms.ModelForm):
             'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'obligatorio': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
-from django import forms
 
 class RecuperarContrasenaForm(forms.Form):
     email = forms.EmailField(

@@ -1,7 +1,7 @@
 .formulario-admin {
     max-width: 500px;
     margin: 40px auto;
-    background-color: #ffffff;
+    background-color: #f9f9f9;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -37,22 +37,41 @@
 
 .formulario-admin input:focus,
 .formulario-admin select:focus {
-    border-color: #ffffff;
+    border-color: #621d28;
     outline: none;
 }
 
-.boton-accion {
-    width: 100%;
-    padding: 12px;
-    background-color: #621d28 ;
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+/* Contenedor de botones */
+.botones-form {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
 }
 
-.boton-accion:hover {
-    background-color: #ffffff;
+/* Botones */
+.boton-principal, .boton-secundario {
+    flex: 1;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+/* Guardar Cambios */
+.boton-principal {
+    background-color: #541722;
+    color: white;
+}
+
+/* Cambiar Contraseña */
+.boton-secundario {
+    background-color: #541722;
+    color: white;
+}
+
+.boton-principal:hover, .boton-secundario:hover {
+    opacity: 0.9;
 }

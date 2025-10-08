@@ -1,0 +1,83 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block title %}Cambiar Contraseña{% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'core/css/cambiar_contrasena_admin.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="formulario-cambio">
+    <h2>Cambiar Contraseña</h2>
+
+<!-- Mensajes de éxito o error -->
+{% if messages %}
+    <div class="mensajes">
+        {% for message in messages %}
+            <div class="mensaje {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<form method="post" action="{% url 'cambiar_contrasena_admin' %}">
+    {% csrf_token %}
+    
+    <div class="campo-formulario">
+        <label for="id_old_password">Contraseña actual:</label>
+        <div class="password-wrapper">
+            {{ form.old_password }}
+            <i class="fa fa-eye" onclick="togglePassword('id_old_password', this)"></i>
+        </div>
+        {{ form.old_password.errors }}
+    </div>
+    
+    <div class="campo-formulario">
+        <label for="id_new_password1">Nueva contraseña:</label>
+        <div class="password-wrapper">
+            {{ form.new_password1 }}
+            <i class="fa fa-eye" onclick="togglePassword('id_new_password1', this)"></i>
+        </div>
+        {{ form.new_password1.errors }}
+    </div>
+    
+    <div class="campo-formulario">
+        <label for="id_new_password2">Confirmar nueva contraseña:</label>
+        <div class="password-wrapper">
+            {{ form.new_password2 }}
+            <i class="fa fa-eye" onclick="togglePassword('id_new_password2', this)"></i>
+        </div>
+        {{ form.new_password2.errors }}
+    </div>
+
+    <div class="botones-form">
+        <button type="submit" class="boton-principal">Actualizar Contraseña</button>
+        <a href="{% url 'admin_perfil' %}" class="boton-secundario">Volver al Perfil</a>
+    </div>
+</form>
+
+</div>
+
+<script>
+    function togglePassword(id, el) {
+        const input = document.getElementById(id);
+        if (input.type === "password") {
+            input.type = "text";
+            el.classList.remove("fa-eye");
+            el.classList.add("fa-eye-slash");
+        } else {
+            input.type = "password";
+            el.classList.remove("fa-eye-slash");
+            el.classList.add("fa-eye");
+        }
+    }
+
+    // Desvanecer mensajes después de 4 segundos
+    setTimeout(() => {
+        document.querySelectorAll('.mensaje').forEach(m => m.style.display = 'none');
+    }, 4000);
+</script>
+
+{% endblock %}

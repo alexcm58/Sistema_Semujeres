@@ -10,8 +10,9 @@
 {% block content %}
 
 <div class="formulario-admin">
-    <h2>Editar Perfil</h2>
-    <form method="post">
+    <h2>Editar Usuario</h2>
+
+        <form action="{% url 'admin_editar_usuario' usuario.id %}" method="post">
         {% csrf_token %}
 
         <p>
@@ -26,11 +27,6 @@
             {{ form.correo.label_tag }}
             {{ form.correo }}
         </p>
-        <p>
-            {{ form.rol.label_tag }}
-            {{ form.rol }}
-        </p>
-    
         <button type="submit" class="boton-accion">Guardar Cambios</button>
     </form>
 </div>

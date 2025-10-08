@@ -3,7 +3,6 @@
 
 {% block title %}Perfil del Administrador{% endblock %}
 
-
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'core/css/admin_perfil.css' %}">
 {% endblock %}
@@ -11,9 +10,8 @@
 {% block content %}
 <div class="formulario-admin">
     <h2>Editar Perfil</h2>
-    <form method="post">
+    <form method="post" action="{% url 'admin_perfil' %}">
         {% csrf_token %}
-
         <p>
             {{ form.username.label_tag }}
             {{ form.username }}
@@ -26,14 +24,18 @@
             {{ form.correo.label_tag }}
             {{ form.correo }}
         </p>
-        <p>
-            {{ form.rol.label_tag }}
-            {{ form.rol }}
-        </p>
-    
 
-        <button type="submit" class="boton-accion">Guardar Cambios</button>
+        <div class="botones-form">
+            <button type="button" class="boton-secundario" onclick="location.href='{% url 'cambiar_contrasena_admin' %}'">
+                Cambiar Contraseña
+            </button>
+
+            <button type="submit" class="boton-principal">
+                Guardar Cambios
+            </button>
+        </div>
     </form>
 </div>
+
 
 {% endblock %}
