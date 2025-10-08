@@ -72,28 +72,21 @@ def cerrar_sesion(request):
     return redirect('login')  # nombre de la URL del login
 
 @user_passes_test(es_admin)
-def admin_revision_documentacion(request):
+def admin_revision_documentacion(request, entidad_id=None):
     entidades = Usuario.objects.filter(rol='usuario')
     entidad_seleccionada = None
     documentos = []
 
-    if request.method == 'GET':
-        entidad_id = request.GET.get('entidad')
-        if entidad_id:
-            entidad_seleccionada = get_object_or_404(Usuario, id=entidad_id)
+    if entidad_id:
+        entidad_seleccionada = get_object_or_404(Usuario, id=entidad_id)
 
-            # 🔹 Aseguramos que existan los documentos
-            for anexo in AnexoRequerido.objects.all():
-                Documento.objects.get_or_create(usuario=entidad_seleccionada, anexo=anexo)
+        # Asegura que existan los documentos
+        for anexo in AnexoRequerido.objects.all():
+            Documento.objects.get_or_create(usuario=entidad_seleccionada, anexo=anexo)
 
-            documentos = Documento.objects.filter(usuario=entidad_seleccionada)
+        documentos = Documento.objects.filter(usuario=entidad_seleccionada)
 
-    elif request.method == 'POST':
-        entidad_id = request.GET.get('entidad')
-        if entidad_id:
-            entidad_seleccionada = get_object_or_404(Usuario, id=entidad_id)
-
-            documentos = Documento.objects.filter(usuario=entidad_seleccionada)
+        if request.method == 'POST':
             for doc in documentos:
                 estado = request.POST.get(f'estado_{doc.id}')
                 observaciones = request.POST.get(f'observaciones_{doc.id}')
@@ -102,12 +95,12 @@ def admin_revision_documentacion(request):
                 doc.observaciones = observaciones
                 doc.save()
 
-            return redirect(f'{request.path}?entidad={entidad_id}')
-        
+            return redirect('admin_revision_documentacion_entidad', entidad_id=entidad_id)
+
     if documentos:
         total = documentos.count()
         validados = documentos.filter(estado='validado').count()
-        porcentaje_validados = round((validados / total) * 100, 2) if total > 0 else 0
+        porcentaje_validados = round((validados / total) * 100, 2)
     else:
         porcentaje_validados = 0
 
@@ -115,8 +108,9 @@ def admin_revision_documentacion(request):
         'entidades': entidades,
         'entidad_seleccionada': entidad_seleccionada,
         'documentos': documentos,
-        'porcentaje_validados': porcentaje_validados,   
+        'porcentaje_validados': porcentaje_validados,
     })
+
 
 @user_passes_test(es_admin)
 def admin_crear_usuario(request):

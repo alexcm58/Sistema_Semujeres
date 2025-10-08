@@ -10,6 +10,7 @@ urlpatterns = [
 
     # Administración de usuarios
     path('revision/', views.admin_revision_documentacion, name='admin_revision_documentacion'),
+    path('revision/<int:entidad_id>/', views.admin_revision_documentacion, name='admin_revision_documentacion_entidad'),
     path('crear_usuario/', views.admin_crear_usuario, name='admin_crear_usuario'),
     path('gestion_usuarios/', views.admin_gestion_usuarios, name='admin_gestion_usuarios'),
     path('eliminar_usuario/<int:usuario_id>/', views.admin_eliminar_usuario, name='eliminar_usuario'),

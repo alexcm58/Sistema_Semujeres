@@ -4,126 +4,124 @@
 {% block title %}Revisión de documentación{% endblock %}
 
 {% block extra_css %}
+
 <link rel="stylesheet" href="{% static 'core/css/admin_revision_documentacion.css' %}">
 <link rel="stylesheet" href="{% static 'core/css/boton_reporte.css' %}">
 {% endblock %}
 
 {% block content %}
+
 <div class="container">
     <h1>Revisión Documentación</h1>
     <p>Seleccione una entidad para validar su documentación</p>
 
-    <!-- Selector de entidad -->
-    <form method="get">
-        <div class="entidad-section">
-            <select name="entidad" onchange="this.form.submit()">
-                <option value="">Seleccione una entidad</option>
-                {% for entidad in entidades %}
-                    <option value="{{ entidad.id }}" {% if entidad_seleccionada and entidad.id == entidad_seleccionada.id %}selected{% endif %}>
-                        {{ entidad.get_full_name|default:entidad.username }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
-    </form>
-
-    {% if documentos %}
-    <form method="post">
-        {% csrf_token %}
-
-        {% if entidad_seleccionada %}
-            <div class="barra-contenedor">
-                <p class="texto-porcentaje">Documentos validados: {{ porcentaje_validados }}%</p>
-                <div class="barra-progreso">
-                    <div class="barra-relleno
-                        {% if porcentaje_validados < 33 %}
-                            rojo
-                        {% elif porcentaje_validados < 66 %}
-                            amarillo
-                        {% else %}
-                            verde
-                        {% endif %}" style="width:{{ porcentaje_validados }}%"></div>
-                </div>
-            </div>
-        {% endif %}
-
-        <div class="table-section">
-            <table class="tabla-documentos">
-                <thead>
-                    <tr>
-                        <th>Documento</th>
-                        <th>Observaciones</th>
-                        <th>Validar Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for documento in documentos %}
-                    <tr>
-                        <!-- Nombre de los Anexos -->
-                        <td>{{ documento.anexo.nombre }}</td>
-                        <!-- Observaciones -->
-                        <td>
-                            <textarea name="observaciones_{{ documento.id }}">{{ documento.observaciones }}</textarea>
-                            <input type="hidden" name="documento_id" value="{{ documento.id }}">
-                        </td>
-                        <!-- Validación -->
-                        <td>
-                            <select name="estado_{{ documento.id }}">
-                                <option value="pendiente" {% if documento.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
-                                <option value="validado" {% if documento.estado == 'validado' %}selected{% endif %}>Validado</option>
-                                <option value="rechazado" {% if documento.estado == 'rechazado' %}selected{% endif %}>Rechazado</option>
-                            </select>
-
-                        </td>
-                        <!-- Botones -->
-                        <td>
-                            {% if documento.archivo %}
-                            <div class="icon-container">
-                                <!-- Icono descarga -->
-                                <a href="{{ documento.archivo.url }}" download title="Descargar">
-                                    <img src="{% static 'core/img/download.png' %}" alt="Descargar" width="24" height="24" />
-                                </a>
-
-                                <!-- Icono vista previa -->
-                                <a href="{{ documento.archivo.url }}" target="_blank" title="Vista previa">
-                                    <img src="{% static 'core/img/visibility.png' %}" alt="Vista previa" width="24" height="24" />
-                                </a>
-                            </div>
-                            {% else %}
-                                
-                            {% endif %}
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <button type="submit">GUARDAR</button>
-    </form>
-    {% endif %}
-
-    {% if not entidad_seleccionada %}
-    <!-- Botón general alineado a la derecha dentro del container -->
-    <div class="btn-container">
-        <form action="{% url 'reporte_general_pdf' %}" method="get" class="btn-reporte">
-            <button type="submit">📄 Descargar Reporte Trimestral General</button>
-        </form>
-    </div>
-    {% endif %}
-    
-    {% if entidad_seleccionada %}
-    <!-- Botón de entidad alineado a la derecha dentro del container -->
-    <div class="btn-container">
-        <form action="{% url 'reporte_entidad_pdf' entidad_seleccionada.id %}" method="get" class="btn-entidad">
-            <button type="submit">
-                📄 Descargar Reporte de {{ entidad_seleccionada.get_full_name|default:entidad_seleccionada.username }}
-            </button>
-        </form>
-    </div>
-    {% endif %}
-    
+<!-- Selector de entidad -->
+<div class="entidad-section">
+    <select name="entidad" id="entidadSelect">
+        <option value="">Seleccione una entidad</option>
+        {% for entidad in entidades %}
+            <option value="{{ entidad.id }}" {% if entidad_seleccionada and entidad.id == entidad_seleccionada.id %}selected{% endif %}>
+                {{ entidad.get_full_name|default:entidad.username }}
+            </option>
+        {% endfor %}
+    </select>
 </div>
+
+{% if documentos %}
+<form method="post">
+    {% csrf_token %}
+
+    {% if entidad_seleccionada %}
+        <div class="barra-contenedor">
+            <p class="texto-porcentaje">Documentos validados: {{ porcentaje_validados }}%</p>
+            <div class="barra-progreso">
+                <div class="barra-relleno
+                    {% if porcentaje_validados < 33 %}
+                        rojo
+                    {% elif porcentaje_validados < 66 %}
+                        amarillo
+                    {% else %}
+                        verde
+                    {% endif %}" style="width:{{ porcentaje_validados }}%"></div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="table-section">
+        <table class="tabla-documentos">
+            <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Observaciones</th>
+                    <th>Validar Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for documento in documentos %}
+                <tr>
+                    <td>{{ documento.anexo.nombre }}</td>
+                    <td>
+                        <textarea name="observaciones_{{ documento.id }}">{{ documento.observaciones }}</textarea>
+                        <input type="hidden" name="documento_id" value="{{ documento.id }}">
+                    </td>
+                    <td>
+                        <select name="estado_{{ documento.id }}">
+                            <option value="pendiente" {% if documento.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                            <option value="validado" {% if documento.estado == 'validado' %}selected{% endif %}>Validado</option>
+                            <option value="rechazado" {% if documento.estado == 'rechazado' %}selected{% endif %}>Rechazado</option>
+                        </select>
+                    </td>
+                    <td>
+                        {% if documento.archivo %}
+                        <div class="icon-container">
+                            <a href="{{ documento.archivo.url }}" download title="Descargar">
+                                <img src="{% static 'core/img/download.png' %}" alt="Descargar" width="24" height="24" />
+                            </a>
+                            <a href="{{ documento.archivo.url }}" target="_blank" title="Vista previa">
+                                <img src="{% static 'core/img/visibility.png' %}" alt="Vista previa" width="24" height="24" />
+                            </a>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <button type="submit">GUARDAR</button>
+</form>
+{% endif %}
+
+{% if not entidad_seleccionada %}
+<div class="btn-container">
+    <form action="{% url 'reporte_general_pdf' %}" method="get" class="btn-reporte">
+        <button type="submit">📄 Descargar Reporte Trimestral General</button>
+    </form>
+</div>
+{% endif %}
+
+{% if entidad_seleccionada %}
+<div class="btn-container">
+    <form action="{% url 'reporte_entidad_pdf' entidad_seleccionada.id %}" method="get" class="btn-entidad">
+        <button type="submit">
+            📄 Descargar Reporte de {{ entidad_seleccionada.get_full_name|default:entidad_seleccionada.username }}
+        </button>
+    </form>
+</div>
+{% endif %}
+</div>
+
+<script>
+document.getElementById('entidadSelect').addEventListener('change', function() {
+    const entidadId = this.value;
+    if (entidadId) {
+        window.location.href = `/revision/${entidadId}/`;
+    } else {
+        window.location.href = `/revision/`;
+    }
+});
+</script>
+
 {% endblock %}
