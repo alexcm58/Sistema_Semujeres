@@ -223,15 +223,6 @@ def admin_perfil(request):
         'usuario': usuario,
     })
 
-from django import forms
-from .models import Usuario   # o tu modelo de usuario personalizado
-
-class EditarPerfilForm(forms.ModelForm):
-    class Meta:
-        model = Usuario
-        # Solo campos seguros para perfil personal
-        fields = ['first_name', 'last_name', 'entidad_federativa', 'email']
-
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 

@@ -36,10 +36,8 @@ class EditarUsuarioForm(forms.ModelForm):
             'username',
             'entidad_federativa',
             'correo',
-            'rol',
-            'is_active',
         ]
-        
+
 class EditarPerfilAdminForm(forms.ModelForm):
     class Meta:
         model = Usuario
