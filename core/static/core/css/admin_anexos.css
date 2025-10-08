@@ -170,3 +170,18 @@
 .toast-warning { background-color: #ffc107; color: #000; }
 .toast-info    { background-color: #17a2b8; }
 .toast .cerrar { margin-left: 15px; cursor: pointer; font-weight: bold; }
+
+/* Mensaje de cambios*/
+.mensajes {
+    margin: 20px auto;
+    width: 80%;
+    padding: 10px;
+}
+
+.alerta {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    padding: 10px;
+}

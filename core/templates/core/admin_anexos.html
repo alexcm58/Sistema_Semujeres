@@ -107,11 +107,4 @@
 </div>
 {% endblock %}
 
-{% block extra_js %}
-<script>
-setTimeout(() => {
-    const toasts = document.querySelectorAll('.toast');
-    toasts.forEach(t => t.remove());
-}, 5000);
-</script>
-{% endblock %}
+
