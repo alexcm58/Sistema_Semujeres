@@ -8,16 +8,6 @@
 {% endblock %}
 
 {% block content %}
-
-<!-- {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %} 
--->
-
 <div class="contenedor-formulario">
     <h2>Crear nueva cuenta</h2>
     <form method="post" class="formulario-creacion">
@@ -43,13 +33,19 @@
 
         <div class="campo-formulario">
             {{ form.password.label_tag }}
-            {{ form.password }}
+            <div class="password-field">
+                {{ form.password }}
+                <i class="fa-regular fa-eye toggle-password" data-target="{{ form.password.id_for_label }}"></i>
+            </div>
             {{ form.password.errors }}
         </div>
 
         <div class="campo-formulario">
             {{ form.confirm_password.label_tag }}
-            {{ form.confirm_password }}
+            <div class="password-field">
+                {{ form.confirm_password }}
+                <i class="fa-regular fa-eye toggle-password" data-target="{{ form.confirm_password.id_for_label }}"></i>
+            </div>
             {{ form.confirm_password.errors }}
         </div>
 
@@ -59,10 +55,31 @@
             {{ form.rol.errors }}
         </div>
 
-        <button href="{% url 'admin_revision_documentacion' %}" type="submit">Crear usuario</button>
+        <button type="submit">Crear usuario</button>
     </form>
-
 </div>
+
+<script>
+document.querySelectorAll('.toggle-password').forEach(icon => {
+    icon.addEventListener('click', function () {
+        // Usamos id_for_label de Django para obtener el ID correcto del input
+        const targetId = this.getAttribute('data-target');
+        const passwordInput = document.getElementById(targetId);
+        
+        // Cambia el tipo de input (oculto/visible) y el ícono (ojo abierto/cerrado)
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            // Cambia a ojo tachado para indicar que la contraseña ahora está visible
+            this.classList.remove('fa-eye');
+            this.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            // Cambia a ojo abierto para indicar que la contraseña ahora está oculta
+            this.classList.remove('fa-eye-slash');
+            this.classList.add('fa-eye');
+        }
+    });
+});
+</script>
+
 {% endblock %}
-
-

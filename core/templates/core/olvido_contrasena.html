@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Contraseña</title>
-    {% block extra_css %}
     <link rel="stylesheet" href="{% static 'core/css/olvido_contraseña.css' %}">
-    {% endblock %}
+    <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
 </head>
 <body>
-        <!-- Barra institucional superior -->
+    
+    <!-- Barra institucional superior -->
     <div class="barra-superior">
         <div class="barra-izquierda">
             <img src="{% static 'core/img/zaclogo.jpeg' %}" alt="Zacatecas Logo" class="logo-barra">
@@ -26,7 +26,7 @@
     </div>
 
     <div class="container">
-        <!-- Mensajes -->
+        <!-- Bloque para mostrar mensajes de Django -->
         {% if messages %}
             {% for message in messages %}
                 <div class="message {% if message.tags == 'error' %}error{% else %}success{% endif %}">
@@ -43,5 +43,49 @@
             <button type="submit">Enviar nueva contraseña</button>
         </form>
     </div>
+    
+    <!-- FOOTER DE 5 COLUMNAS -->
+    <footer>
+       
+        <div class="footer-container">
+            
+            <div class="footer-col footer-logo-1">
+                <img src="{% static 'core/img/logo_labsol.png' %}" alt="Logo Labsol">
+            </div>
+
+            <div class="footer-col footer-logo-2">
+                <img src="{% static 'core/img/GPLv3_Logo.svg.png' %}" alt="Logo GPLv3">
+            </div>
+
+            <div class="footer-col footer-col-dir">
+                <h3>Dirección</h3>
+                <p>Circuito Cerro del Gato s/n<br>Ciudad Administrativa</p>
+                <p>CP 98160, Zacatecas, Zac.</p>
+            </div>
+
+            <div class="footer-col">
+                <h3>Equipo</h3>
+                <ul>
+                    <li>Alejandro Chávez Murillo</li>
+                    <li>Jesús Alberto Rodríguez Valencia</li>
+                    <li>Karla Guadalupe Rocha Quezada</li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <p><i class="fa-solid fa-phone"></i> 492 491 5000</p>
+                <p><i class="fa-solid fa-envelope"></i> contacto@zacatecas.gob.mx</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/gobiernozac/" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/gobiernozac" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://www.instagram.com/gobiernozac/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/user/gobiernozac" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        
+    </footer>
+
 </body>
 </html>

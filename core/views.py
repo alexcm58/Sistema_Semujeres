@@ -1,50 +1,63 @@
 # --------------------
-# Django - Vistas, autenticación y utilidades
+# Python Estándar
 # --------------------
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.hashers import make_password
-from django.contrib import messages
-from django.http import HttpResponse
-from django.utils.text import slugify
-from django.core.files.storage import default_storage
-from django.core.mail import send_mail, BadHeaderError
-from django.conf import settings
-from django.core.files.base import ContentFile
-
-# --------------------
-# Modelos y formularios del proyecto
-# --------------------
-from .models import Documento, Usuario, AnexoRequerido, AnexoHistorico
-from .forms import CrearUsuarioForm, EditarUsuarioForm, AnexoForm, EditarPerfilAdminForm
-from .models import AnexoRequerido
-# --------------------
-# Python estándar
-# --------------------
+import os
+import random
+import string
+import zipfile
 from datetime import datetime
 from io import BytesIO
-import os
-import zipfile
 
 # --------------------
-# ReportLab - Generación de PDFs
+# Django - Vistas, autenticación y utilidades
 # --------------------
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.hashers import make_password
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+from django.core.mail import send_mail, BadHeaderError
+from django.db.utils import IntegrityError
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.text import slugify
+
+# --------------------
+# Librerías de Terceros (ReportLab, Matplotlib, Pandas)
+# --------------------
+import matplotlib
+import matplotlib.pyplot as plt
+import pandas as pd
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import (
     SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, KeepTogether
 )
-from reportlab.lib.pagesizes import letter
-from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import Image as RLImage
 
+# Ajuste de Matplotlib (necesario si se usa en entornos sin GUI)
+matplotlib.use('Agg') 
+
 # --------------------
-# Matplotlib y Pandas - Gráficos para PDF
+# Modelos y Formularios del Proyecto (Locales)
 # --------------------
-import matplotlib
-matplotlib.use('Agg')  # Backend sin GUI (necesario para entornos web/macOS)
-import matplotlib.pyplot as plt
-import pandas as pd
+from .forms import (
+    CrearUsuarioForm, 
+    EditarUsuarioForm, 
+    AnexoForm, 
+    EditarPerfilAdminForm, 
+)
+from .models import (
+    Documento, 
+    Usuario, 
+    AnexoRequerido, 
+    AnexoHistorico,
+)
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -75,7 +88,7 @@ def cerrar_sesion(request):
 def admin_revision_documentacion(request, entidad_id=None):
     entidades = Usuario.objects.filter(rol='usuario')
     entidad_seleccionada = None
-    documentos = Documento.objects.none()  # queryset vacío por defecto
+    documentos = Documento.objects.none()
 
     if entidad_id:
         entidad_seleccionada = get_object_or_404(Usuario, id=entidad_id)
@@ -87,6 +100,7 @@ def admin_revision_documentacion(request, entidad_id=None):
         documentos = Documento.objects.filter(usuario=entidad_seleccionada)
 
         if request.method == 'POST':
+            # ... (código para guardar cambios) ...
             for doc in documentos:
                 estado = request.POST.get(f'estado_{doc.id}')
                 observaciones = request.POST.get(f'observaciones_{doc.id}')
@@ -95,6 +109,9 @@ def admin_revision_documentacion(request, entidad_id=None):
                 doc.observaciones = observaciones
                 doc.save()
 
+            # 🟢 AÑADIR MENSAJE DE ÉXITO ANTES DE REDIRIGIR
+            messages.success(request, 'Cambios de documentación guardados correctamente.')
+            
             return redirect('admin_revision_documentacion_entidad', entidad_id=entidad_id)
 
     # Calcular porcentaje seguro
@@ -112,7 +129,6 @@ def admin_revision_documentacion(request, entidad_id=None):
         'porcentaje_validados': porcentaje_validados,
     })
 
-
 @user_passes_test(es_admin)
 def admin_crear_usuario(request):
     if request.method == 'POST':
@@ -121,13 +137,26 @@ def admin_crear_usuario(request):
             usuario = form.save(commit=False)
             usuario.set_password(form.cleaned_data['password'])
             usuario.is_active = True
-            usuario.save()
-            messages.success(request, 'Usuario creado con éxito.')
-            return redirect('admin_crear_usuario')
+            
+            try:
+                usuario.save()
+                messages.success(request, 'Usuario creado con éxito.')
+                return redirect('admin_crear_usuario')
+            
+            # 📌 CAMBIO CLAVE 1: Manejar el error de unicidad (correo ya existe)
+            except IntegrityError:
+                messages.error(request, 'El correo electrónico ya está registrado. Por favor, use uno diferente.')
+                # Renderizamos la página con el formulario lleno para que el admin no pierda datos
+                return render(request, 'core/admin_crear_usuario.html', {'form': form})
+            
+        else:
+            # Si la validación del formulario falla por otras razones (e.g., contraseñas no coinciden)
+            # Renderizamos para mostrar los errores específicos del formulario
+            pass 
     else:
         form = CrearUsuarioForm()
+    
     return render(request, 'core/admin_crear_usuario.html', {'form': form})
-
 @login_required
 def usuario_dashboard(request):
     # 🔹 Asegurar que el usuario tenga documentos creados
@@ -188,15 +217,7 @@ def editar_usuario(request, usuario_id):
 
     return render(request, 'core/admin_editar_usuario.html', {'form': form, 'usuario': usuario})
 
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import user_passes_test
-from .forms import EditarUsuarioForm
-from django.contrib import messages
-from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import render
+
 
 @user_passes_test(es_admin)
 def admin_perfil(request):
@@ -206,10 +227,10 @@ def admin_perfil(request):
         form = EditarPerfilAdminForm(request.POST, instance=usuario)
         if form.is_valid():
             form.save()
-            messages.success(request, '✅ Tu perfil fue actualizado correctamente.')
+            messages.success(request, 'Tu perfil fue actualizado correctamente.')
             return redirect('admin_perfil')
         else:
-            messages.error(request, '❌ Revisa los campos e inténtalo de nuevo.')
+            messages.error(request, 'Revisa los campos e inténtalo de nuevo.')
     else:
         form = EditarPerfilAdminForm(instance=usuario)
 
@@ -218,8 +239,7 @@ def admin_perfil(request):
         'usuario': usuario,
     })
 
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
+
 
 @user_passes_test(es_admin)
 def cambiar_contrasena_admin(request):
@@ -625,10 +645,10 @@ def admin_anexos(request):
         if form.is_valid():
             form.save()
             sincronizar_documentos_por_usuario()  # 🔥 sincronización total
-            messages.success(request, "✅ El documento requerido fue agregado correctamente.")
+            messages.success(request, "El documento requerido fue agregado correctamente.")
             return redirect('admin_anexos')  # evita reenvíos dobles
         else:
-            messages.error(request, "❌ Ocurrió un error al guardar el documento.")
+            messages.error(request, "Ocurrió un error al guardar el documento.")
     else:
         form = AnexoForm()
 
@@ -644,16 +664,16 @@ def eliminar_anexo(request, anexo_id):
     try:
         anexo = AnexoRequerido.objects.get(id=anexo_id)
         anexo.delete()
-        messages.success(request, "✅ El anexo fue eliminado correctamente.")
+        messages.success(request, "El anexo fue eliminado correctamente.")
     except AnexoRequerido.DoesNotExist:
-        messages.error(request, "❌ El anexo no existe.")
+        messages.error(request, "El anexo no existe.")
     return redirect('admin_anexos')
 
 # --- Eliminar todos los anexos
 @user_passes_test(es_admin)
 def eliminar_todos_anexos(request):
     AnexoRequerido.objects.all().delete()
-    messages.success(request, "✅ Todos los anexos han sido eliminados.")
+    messages.success(request, "Todos los anexos han sido eliminados.")
     return redirect('admin_anexos')
 
 @user_passes_test(es_admin)
@@ -672,9 +692,9 @@ def limpiar_anexos_subidos(request):
                 archivos_limpiados += 1
 
         if archivos_limpiados:
-            messages.success(request, f"✅ Se han limpiado {archivos_limpiados} archivos subidos correctamente.")
+            messages.success(request, f"Se han limpiado {archivos_limpiados} archivos subidos correctamente.")
         else:
-            messages.info(request, "ℹ️ No había archivos para limpiar.")
+            messages.info(request, "No había archivos para limpiar.")
         return redirect('admin_anexos')
     return redirect('admin_anexos')
 
@@ -705,9 +725,9 @@ def respaldar_anexos(request):
                     respaldados += 1
 
         if respaldados:
-            messages.success(request, f"✅ Se han respaldado {respaldados} archivos correctamente.")
+            messages.success(request, f"Se han respaldado {respaldados} archivos correctamente.")
         else:
-            messages.info(request, "ℹ️ No había archivos nuevos para respaldar.")
+            messages.info(request, "No había archivos nuevos para respaldar.")
         return redirect('admin_anexos')
     return redirect('admin_anexos')
 
@@ -771,9 +791,6 @@ def reporte_anexos_pdf(request):
     response['Content-Disposition'] = f'attachment; filename="Reporte_Anexos_{fecha_str}.pdf"'
     return response
 
-from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import render
-from .models import AnexoHistorico
 
 @user_passes_test(es_admin)
 def vista_respaldo_anexos(request):
@@ -852,15 +869,6 @@ def descargar_respaldo_zip(request):
     response['Content-Disposition'] = 'attachment; filename=respaldo_anexos.zip'
     return response
 
-import random
-import string
-from django.core.mail import send_mail
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
-from .models import Usuario  # tu modelo de usuario
 
 # 🔑 Función para generar contraseñas aleatorias
 def generar_contrasena(longitud=10):
@@ -896,11 +904,11 @@ Por favor, cambia tu contraseña después de iniciar sesión.
                 fail_silently=False,
             )
 
-            messages.success(request, "✅ Se envió una nueva contraseña a tu correo.")
-            return redirect("login")
+            messages.success(request, "Se envió una nueva contraseña a tu correo.")
+            return render(request, "core/olvido_contrasena.html")
 
         except Usuario.DoesNotExist:
-            messages.error(request, "❌ El correo no está registrado.")
+            messages.error(request, " El correo no está registrado.")
 
     return render(request, "core/olvido_contrasena.html")
 

@@ -6,7 +6,7 @@ from .models import AnexoRequerido
 
 # forms.py
 class CrearUsuarioForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
     confirm_password = forms.CharField(widget=forms.PasswordInput, label="Confirmar contraseña")
 
     class Meta:

@@ -62,9 +62,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',  # MySQLdb funciona con MariaDB
         'NAME': 'semujer_db',
         'USER': 'semujer_user',
-        'PASSWORD': 'Semujer123',
+        'PASSWORD': 'Semujer123!',
         'HOST': 'localhost',
-        'PORT': '3307',
+        'PORT': '3306',
     }
 }
 

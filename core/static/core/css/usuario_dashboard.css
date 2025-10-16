@@ -163,69 +163,100 @@ table th:nth-child(4) {
     height: 20px;
 }
 
-/*Pieda de pagina */
+/*-------------------------------------*/
+/* --- FOOTER (5 COLUMNAS CORREGIDO) --- */
+/*-------------------------------------*/
 
 footer {
-            background-color: #ffffffff;
-            color: #ffffff;
-            padding: 15px 10px 5px; /* mucho más compacto */
-            margin-top: 20px;
-            font-size: 12px;
-        }
-        .footer-container {
-            max-width: 950px;
-            margin: auto;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .footer-col {
-            flex: 1 1 220px;
-            text-align: center;
-        }
-        .footer-col h3 {
-            color: #090909ff;
-            margin-bottom: 5px;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        .footer-col p, .footer-col li, .footer-col a {
-            font-size: 12px;
-            color: #111010ff;
-            text-decoration: none;
-            line-height: 1.4;
-            margin: 2px 0;
-        }
-        .footer-col ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .footer-logo img {
-            max-width: 160px; /* logo más pequeño aún */
-            margin-bottom: 6px;
-        }
-        .social-icons {
-            margin-top: 5px;
-        }
-        .social-icons a {
-            margin: 0 5px;
-            font-size: 14px;
-            color: #1a1717ff;
-            transition: opacity 0.3s;
-        }
-        .social-icons a:hover {
-            opacity: 0.7;
-        }
-        .bottom-bar {
-            margin-top: 8px;
-            padding: 5px;
-            text-align: center;
-            font-size: 11px;
-            background-color: #ffffffff;
-        }
+    background-color: #ffffffff;
+    color: #ffffff;
+    padding: 15px 10px 5px; 
+    margin-top: 20px;
+    font-size: 12px;
+}
+
+.footer-container {
+    max-width: 1200px; /* Aumentamos el ancho máximo para 5 columnas */
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.footer-col {
+    /* Nueva regla de flex para 5 columnas (20% por columna) */
+    flex: 1 1 calc(20% - 15px); 
+    text-align: center;
+    min-width: 120px; 
+}
+
+.footer-col h3 {
+    color: #090909ff;
+    margin-bottom: 5px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.footer-col p, .footer-col li, .footer-col a {
+    font-size: 12px;
+    color: #111010ff;
+    text-decoration: none;
+    line-height: 1.4;
+    margin: 2px 0;
+}
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Reglas clave para los logos en sus propias columnas (footer-logo-1 y footer-logo-2) */
+.footer-logo-1,
+.footer-logo-2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.footer-logo-1 img,
+.footer-logo-2 img {
+    /* Forzado de tamaño para que sean compactos */
+    max-width: 100% !important; 
+    max-height: 80px !important; 
+    width: auto;     
+    height: auto;
+    display: block;  
+    margin: 5px auto; 
+}
+
+/* La antigua regla .footer-logo img se mantiene por si acaso, pero la sobrescribimos */
+.footer-logo img {
+    max-width: 100px;
+    margin-bottom: 6px;
+}
+
+.social-icons {
+    margin-top: 5px;
+}
+.social-icons a {
+    margin: 0 5px;
+    font-size: 14px;
+    color: #1a1717ff;
+    transition: opacity 0.3s;
+}
+.social-icons a:hover {
+    opacity: 0.7;
+}
+.bottom-bar {
+    margin-top: 8px;
+    padding: 5px;
+    text-align: center;
+    font-size: 11px;
+    background-color: #ffffffff;
+}
+
+
 /* Contenedor de barra de progreso */
 .barra-contenedor-dashboard {
     width: 60%;               /* ancho de la barra */
@@ -288,49 +319,60 @@ footer {
 }
 /* Icono de ayuda */
 .tooltip-ayuda {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    margin-left: 6px;
-    border-radius: 50%;
-    border: 1px solid #555;
-    font-size: 12px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #555;
-    position: relative;
-    transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  border-radius: 50%;
+  border: 1px solid #555;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #555;
+  position: relative;          
+  transition: background-color 0.2s;
+  overflow: visible;           
 }
 
-.tooltip-ayuda:hover {
-    background-color: #eee;
-}
-
-/* Tooltip emergente */
+.tooltip-ayuda:hover { background-color: #eee; }
 .tooltip-ayuda:hover::after {
-    content: attr(data-text);
-    position: absolute;
-    top: -5px;
-    left: 120%;
-    white-space: nowrap;
-    background-color: #333;
-    color: white;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  content: attr(data-text);
+  position: absolute;
+  display: inline-block;       
+  box-sizing: border-box;
+  min-width: 150px;            
+  max-width: 450px;
+  white-space: normal;         
+  overflow-wrap: break-word;   
+  word-break: normal;          
+
+  top: 50%;
+  left: calc(100% + 10px);
+  transform: translateY(-50%);
+
+  background-color: #333;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0,0,0,.3);
 }
+
 
 /* Flecha del tooltip */
 .tooltip-ayuda:hover::before {
-    content: "";
-    position: absolute;
-    top: 4px;
-    left: 110%;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent #333 transparent transparent;
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 4px);      
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent #333 transparent transparent;
+  z-index: 1001;
+  pointer-events: none;
 }

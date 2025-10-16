@@ -1,91 +1,18 @@
-
-
-.header {
-    text-align: center;
-    padding: 30px;
-}
-
-.header img {
-    height: 60px;
-}
-
-.header h1 {
-    font-size: 20px;
-    color: #651E29;
-    margin-top: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.login-container {
-    max-width: 350px;
-    margin: 30px auto;
-    padding: 25px;
-    background-color: white;
-    box-shadow: 0 0 10px #ccc;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.login-container input {
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
-
-.login-container button {
-    background-color: #111;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    width: 95%;
-}
-
-.links {
-    margin-top: 10px;
-    font-size: 0.9em;
-}
-
-
-/* Escudo pequeño y centrado */
-.header {
-    text-align: center;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-.escudo {
-    height: 40px;
-    object-fit: contain;
-}
-
-/* Banner grande del modelo */
-.banner-modelo {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    background-color: white;
-    margin-bottom: 20px;
-}
-
-.logo-modelo-banner {
-    width: 100%;
-    max-width: 800px; /* controla el tamaño máximo sin deformar */
-    height: auto;
-    object-fit: contain;
-}
+/* ------------------------------------ */
+/* --- GENERAL Y ESTRUCTURA DE PÁGINA --- */
+/* ------------------------------------ */
 body {
     margin: 0;
     font-family: 'Open Sans', sans-serif;
     background-color: #f8f8f8;
     color: #333;
-    min-height: 100vh;         /* que al menos ocupe la pantalla completa */
-    overflow-y: auto;          /* permite scroll vertical */
+    min-height: 100vh;         /* Ocupa al menos la pantalla completa */
+    overflow-y: auto;          /* Permite scroll vertical */
 }
-/* Barra institucional */
+
+/* ------------------------------------ */
+/* --- BARRA SUPERIOR (Institucional) --- */
+/* ------------------------------------ */
 .barra-superior {
     display: flex;
     justify-content: space-between;
@@ -124,6 +51,87 @@ body {
 .barra-derecha a:hover {
     color: #651E29;
 }
+
+/* ------------------------------------ */
+/* --- ENCABEZADO DE LOGIN / ESCUDO --- */
+/* ------------------------------------ */
+.header {
+    text-align: center;
+    padding: 30px 30px 0;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.header img {
+    height: 60px;
+}
+.escudo {
+    height: 40px;
+    object-fit: contain;
+}
+
+.header h1 {
+    font-size: 20px;
+    color: #651E29;
+    margin-top: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* ------------------------------------ */
+/* --- BANNER Y CONTENEDOR DE LOGIN --- */
+/* ------------------------------------ */
+.banner-modelo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.logo-modelo-banner {
+    width: 100%;
+    max-width: 800px; 
+    height: auto;
+    object-fit: contain;
+}
+
+.login-container {
+    max-width: 350px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: white;
+    box-shadow: 0 0 10px #ccc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.login-container input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.login-container button {
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 95%;
+}
+
+.links {
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+/* ------------------------------------ */
+/* --- TOAST DE ERROR (Notificación) --- */
+/* ------------------------------------ */
 .toast-error {
     position: fixed;
     top: 30px;
@@ -146,65 +154,95 @@ body {
     transform: translateX(-50%) translateY(0);
 }
 
-
+/* ------------------------------------ */
+/* --- FOOTER GENERAL (Base) --- */
+/* ------------------------------------ */
 footer {
-            background-color: #ffffffff;
-            color: #ffffff;
-            padding: 15px 10px 5px; /* mucho más compacto */
-            margin-top: 20px;
-            font-size: 12px;
-        }
-        .footer-container {
-            max-width: 950px;
-            margin: auto;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .footer-col {
-            flex: 1 1 220px;
-            text-align: center;
-        }
-        .footer-col h3 {
-            color: #090909ff;
-            margin-bottom: 5px;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        .footer-col p, .footer-col li, .footer-col a {
-            font-size: 12px;
-            color: #111010ff;
-            text-decoration: none;
-            line-height: 1.4;
-            margin: 2px 0;
-        }
-        .footer-col ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .footer-logo img {
-            max-width: 160px; /* logo más pequeño aún */
-            margin-bottom: 6px;
-        }
-        .social-icons {
-            margin-top: 5px;
-        }
-        .social-icons a {
-            margin: 0 5px;
-            font-size: 14px;
-            color: #1a1717ff;
-            transition: opacity 0.3s;
-        }
-        .social-icons a:hover {
-            opacity: 0.7;
-        }
-        .bottom-bar {
-            margin-top: 8px;
-            padding: 5px;
-            text-align: center;
-            font-size: 11px;
-            background-color: #ffffffff;
-        }
+    background-color: #ffffffff;
+    color: #ffffff;
+    padding: 15px 10px 5px; 
+    margin-top: 20px;
+    font-size: 12px;
+}
+.footer-container {
+    max-width: 1200px; /* Aumentado para 5 columnas */
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.footer-col h3 {
+    color: #090909ff;
+    margin-bottom: 5px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.footer-col p, .footer-col li, .footer-col a {
+    font-size: 12px;
+    color: #111010ff;
+    text-decoration: none;
+    line-height: 1.4;
+    margin: 2px 0;
+}
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.social-icons {
+    margin-top: 5px;
+}
+.social-icons a {
+    margin: 0 5px;
+    font-size: 14px;
+    color: #1a1717ff;
+    transition: opacity 0.3s;
+}
+.social-icons a:hover {
+    opacity: 0.7;
+}
+.bottom-bar {
+    margin-top: 8px;
+    padding: 5px;
+    text-align: center;
+    font-size: 11px;
+    background-color: #ffffffff;
+}
+
+/* ------------------------------------ */
+/* --- SOBREESCRITURA: ESTRUCTURA DE 5 COLUMNAS Y LOGOS COMPACTOS --- */
+/* ------------------------------------ */
+
+.footer-col {
+    /* Nueva regla de flex para 5 columnas (20% por columna) */
+    flex: 1 1 calc(20% - 15px); 
+    text-align: center;
+    min-width: 120px; 
+}
+
+/* Sobreescribe cualquier regla anterior de logo */
+.footer-logo-1,
+.footer-logo-2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-logo-1 img,
+.footer-logo-2 img {
+    /* 🚨 CLAVE: Forzado de tamaño para los logos */
+    max-width: 100% !important; 
+    max-height: 80px !important; /* Limita la altura de los logos */
+    
+    width: auto;     
+    height: auto;
+    display: block;  
+    margin: 5px auto; 
+}
+/* Asegura que la regla antigua para .footer-logo img no afecte a las nuevas */
+.footer-logo img {
+    max-width: 100px; /* Si tienes la clase vieja, le damos un max-width pequeño */
+}

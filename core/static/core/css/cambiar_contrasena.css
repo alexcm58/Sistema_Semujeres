@@ -1,0 +1,237 @@
+/* ------------------------------------ */
+/* --- GENERAL Y ESTRUCTURA DE PÁGINA --- */
+/* ------------------------------------ */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ------------------------------------ */
+/* --- FORMULARIO DE CAMBIO DE CONTRASEÑA (FORZANDO 500PX) --- */
+/* ------------------------------------ */
+.container {
+    /* 🚨 ESTOS SON LOS ESTILOS PARA FORZAR EL TAMAÑO DE 500PX */
+    max-width: 500px !important; /* Usamos !important para asegurar que sobrescriba a login.css */
+    width: 90%; /* Asegura que se comprima en móviles */
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    text-align: center;
+    flex-grow: 1; 
+}
+
+h2 {
+    text-align: center;
+    color: #0c0b0c;
+    margin-bottom: 25px;
+    font-size: 1.6em;
+}
+
+/* ------------------------------------ */
+/* --- CAMPOS (INPUT-GROUP) --- */
+/* ------------------------------------ */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: left;
+}
+.input-group label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding-right: 40px;
+    font-size: 1em;
+    box-sizing: border-box; 
+}
+.input-group i {
+    position: absolute;
+    right: 10px;
+    top: 65%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+.input-group i:hover {
+    color: #555;
+}
+
+/* ------------------------------------ */
+/* --- BOTÓN DE SUBMIT --- */
+/* ------------------------------------ */
+button {
+    background-color: #621d28;
+    color: #fff;
+    padding: 12px 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 300px;
+    font-size: 15px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+button:hover {
+    background-color: #4e151f;
+}
+
+/* ------------------------------------ */
+/* --- MENSAJES DE ALERTA --- */
+/* ------------------------------------ */
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 14px;
+}
+.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* ------------------------------------ */
+/* --- BARRA SUPERIOR (Institucional) --- */
+/* ------------------------------------ */
+.barra-superior {
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+.barra-izquierda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.barra-superior img {
+    height: 40px;
+}
+.barra-superior .link-zacatecas {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+.barra-superior .boton-salir {
+    font-weight: bold;
+    color: #0b0b0bff;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+.barra-superior .boton-salir:hover {
+    color: #621d28;
+}
+
+/* ------------------------------------ */
+/* --- FOOTER DE 5 COLUMNAS --- */
+/* ------------------------------------ */
+footer {
+    background-color: #ffffffff;
+    color: #ffffff;
+    padding: 15px 10px 5px; 
+    margin-top: 20px;
+    font-size: 12px;
+}
+.footer-container {
+    max-width: 1200px; 
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.footer-col {
+    flex: 1 1 calc(20% - 15px); 
+    text-align: center;
+    min-width: 120px; 
+}
+.footer-col h3 {
+    color: #090909ff;
+    margin-bottom: 5px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.footer-col p, .footer-col li, .footer-col a {
+    font-size: 12px;
+    color: #111010ff;
+    text-decoration: none;
+    line-height: 1.4;
+    margin: 2px 0;
+}
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Logos compactos */
+.footer-logo-1,
+.footer-logo-2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.footer-logo-1 img,
+.footer-logo-2 img {
+    max-width: 100% !important; 
+    max-height: 80px !important; 
+    width: auto;     
+    height: auto;
+    display: block;  
+    margin: 5px auto; 
+}
+
+/* Iconos Sociales */
+.social-icons {
+    margin-top: 5px;
+}
+.social-icons a {
+    margin: 0 5px;
+    font-size: 14px;
+    color: #1a1717ff;
+    transition: opacity 0.3s;
+}
+.social-icons a:hover {
+    opacity: 0.7;
+}
+
+/* Barra inferior */
+.bottom-bar {
+    margin-top: 8px;
+    padding: 5px;
+    text-align: center;
+    font-size: 11px;
+    background-color: #ffffffff;
+    color: #111010ff;
+}

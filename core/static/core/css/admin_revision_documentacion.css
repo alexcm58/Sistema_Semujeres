@@ -231,3 +231,46 @@ table td {
 .barra-relleno.verde {
     background-color: #4CAF50; /* verde */
 }
+
+/* --- ESTILOS PARA LOS MENSAJES DE DJANGO (SUCCESS, ERROR, ETC.) --- */
+
+.messages {
+    list-style: none;
+    padding: 0;
+    margin: 20px auto; /* Centrado dentro del contenedor */
+    width: 80%; /* Ancho fijo para mensajes */
+    max-width: 600px;
+    text-align: left;
+}
+
+.messages li {
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    border: 1px solid transparent;
+    transition: opacity 0.3s;
+}
+
+/* Estilo para Mensajes de Éxito (messages.success) */
+.messages .success {
+    background-color: #d4edda; /* Fondo verde muy claro */
+    color: #155724; /* Texto verde oscuro */
+    border-color: #c3e6cb; /* Borde verde */
+    box-shadow: 0 2px 4px rgba(21, 87, 36, 0.1);
+}
+
+/* Opcional: Estilo para Mensajes de Error (messages.error) */
+.messages .error {
+    background-color: #f8d7da; /* Fondo rojo claro */
+    color: #721c24; /* Texto rojo oscuro */
+    border-color: #f5c6cb; /* Borde rojo */
+}
+
+/* Opcional: Estilo para Mensajes de Advertencia (messages.warning) */
+.messages .warning {
+    background-color: #fff3cd; /* Fondo amarillo claro */
+    color: #856404; /* Texto amarillo oscuro */
+    border-color: #ffeeba; /* Borde amarillo */
+}

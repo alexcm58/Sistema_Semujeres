@@ -11,11 +11,37 @@ ROLES = [
     ('usuario', 'Usuario'),
     ('admin', 'Administrador'),
 ]
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+# ... Asegúrate de que ROLES esté definido en este scope ...
+
 
 class Usuario(AbstractUser):
+    # CORRECCIÓN DE USERNAME
+    # Redeclaramos el campo username para añadir el error_messages
+    username = models.CharField(
+        _("username"),
+        max_length=150,
+        unique=True,
+        help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."),
+        validators=[AbstractUser.username_validator],
+        error_messages={
+            'unique': "Ya existe un usuario con este nombre."  # <-- Mensaje en español
+        },
+    )
+
     nombre_responsable = models.CharField(max_length=100)
     entidad_federativa = models.CharField(max_length=100)
-    correo = models.EmailField(unique=True)
+    
+    # CORRECCIÓN DE CORREO (Ya estaba correcta, se mantiene)
+    correo = models.EmailField(
+        unique=True,
+        error_messages={
+            'unique': "Ya existe un usuario con este Correo."  # <-- Mensaje en español
+        }
+    )
     rol = models.CharField(max_length=10, choices=ROLES, default='usuario')
 
     def __str__(self):

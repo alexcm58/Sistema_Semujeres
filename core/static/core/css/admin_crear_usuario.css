@@ -30,6 +30,19 @@ body {
     font-weight: 500;
 }
 
+/* ---------------------------------------------------- */
+/* --- ESTILOS CORREGIDOS PARA EL CAMPO CONTRASEÑA --- */
+/* ---------------------------------------------------- */
+
+/* 1. Contenedor del Input y el Ojo (Clave para la posición) */
+.password-field {
+    /* Establece el contexto para el posicionamiento absoluto del ojo */
+    position: relative; 
+    /* Asegura que ocupe todo el ancho del formulario */
+    width: 100%;
+}
+
+/* 2. Estilo general de los inputs (ajustado para la contraseña) */
 .formulario-creacion input {
     width: 100%;
     padding: 10px;
@@ -38,10 +51,38 @@ body {
     box-sizing: border-box;
 }
 
+/* 3. Ajuste del padding para el campo de contraseña */
+.password-field input {
+    /* Agrega espacio a la derecha para que el texto no quede debajo del ojo */
+    padding-right: 40px; 
+}
+
+/* 4. Estilo y Posición del Ojo */
+.toggle-password {
+    /* Permite posicionarlo de forma precisa dentro de .password-field */
+    position: absolute; 
+    /* Coloca el ojo 15px desde el borde derecho */
+    right: 15px; 
+    /* Lo centra verticalmente en el campo */
+    top: 50%; 
+    /* Ajuste fino para centrado vertical perfecto */
+    transform: translateY(-50%); 
+    
+    cursor: pointer; /* Indica que es clickeable */
+    color: #888; /* Color suave para el icono */
+    font-size: 1.1em;
+    z-index: 10; /* Asegura que esté por encima del campo de texto */
+}
+
+/* ---------------------------------------------------- */
+/* -------- ESTILOS ORIGINALES (Mantenidos) --------- */
+/* ---------------------------------------------------- */
+
 .formulario-creacion button {
     width: 100%;
     padding: 12px;
-    background-color: #621d28;
+    /* Color del botón ajustado a tu imagen: #621d28 */
+    background-color: #621d28; 
     color: white;
     border: none;
     border-radius: 6px;
@@ -51,5 +92,5 @@ body {
 }
 
 .formulario-creacion button:hover {
-    background-color: #621d28;
+    background-color: #4a151d; /* Un color un poco más oscuro al pasar el ratón */
 }
