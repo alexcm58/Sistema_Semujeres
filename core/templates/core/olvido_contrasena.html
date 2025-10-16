@@ -17,17 +17,15 @@
             <a href="https://zacatecas.gob.mx" class="link-zacatecas" target="_blank">zacatecas.gob.mx</a>
         </div>
         <div class="barra-derecha">
-            <a href="login.html" target="_blank">REGRESAR</a>
+            <a href="{% url 'login' %}">REGRESAR</a>
         </div>
+    </div>
+        <!-- Banner del Modelo -->
+    <div class="banner-modelo">
+        <img src="{% static 'core/img/modelo_igualdad.jpg' %}" alt="Modelo Igualdad" class="logo-modelo-banner">
     </div>
 
     <div class="container">
-        <!-- Logo -->
-        <div class="logo">
-            <img src="https://issstezac.gob.mx/wp-content/uploads/2024/11/LOGO-MODELO-PARA-LA-IGUALDAD-01.png" 
-                 alt="Logo SEMUJERES">
-        </div>
-
         <!-- Mensajes -->
         {% if messages %}
             {% for message in messages %}

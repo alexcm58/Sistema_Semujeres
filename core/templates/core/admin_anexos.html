@@ -12,18 +12,6 @@
 
     <h2 class="titulo-seccion titulo-centrado">Administración de Documentos Requeridos</h2>
 
-    <!-- Toasts -->
-    <div id="toast-container">
-        {% if messages %}
-            {% for message in messages %}
-            <div class="toast toast-{{ message.tags }}">
-                {{ message }}
-                <span class="cerrar" onclick="this.parentElement.style.display='none';">&times;</span>
-            </div>
-            {% endfor %}
-        {% endif %}
-    </div>
-
     <!-- Formulario para agregar -->
     <div class="tarjeta-formulario">
         <h4>Agregar nuevo documento requerido</h4>

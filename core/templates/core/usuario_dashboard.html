@@ -64,7 +64,10 @@
                 <tbody>
                     {% for doc in documentos %}
                     <tr>
-                        <td>{{ doc.anexo.nombre }}</td>
+                        <td style="position: relative;">
+                            <span class="tooltip-ayuda" data-text="{{ doc.anexo.descripcion }}">? </span>
+                            {{ doc.anexo.nombre }}
+                        </td>
                         <td>
                             {% if doc.archivo %}
                                 {{ doc.fecha_subida|date:"d-m-Y" }}

@@ -9,6 +9,20 @@ flex-direction: column;
 align-items: center;
 }
 
+/* Banner grande del modelo */
+.banner-modelo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    margin-bottom: 10px;
+}
+.logo-modelo-banner {
+    width: 100%;
+    max-width: 800px; /* controla el tamaño máximo sin deformar */
+    height: auto;
+    object-fit: contain;
+}
 /* === BARRA SUPERIOR === */
 .barra-superior {
 width: 100%;
@@ -41,10 +55,13 @@ margin-right: 10px;
 display: flex;
 align-items: center;
 }
+.barra-derecha {
+    margin-right: 30px;
+}
 
 /* === CONTENEDOR PRINCIPAL === */
 .container {
-margin-top: 70px;
+margin-top: 20px;
 background-color: white;
 border-radius: 16px;
 padding: 40px;

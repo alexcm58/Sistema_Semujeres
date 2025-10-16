@@ -75,7 +75,7 @@ def cerrar_sesion(request):
 def admin_revision_documentacion(request, entidad_id=None):
     entidades = Usuario.objects.filter(rol='usuario')
     entidad_seleccionada = None
-    documentos = []
+    documentos = Documento.objects.none()  # queryset vacío por defecto
 
     if entidad_id:
         entidad_seleccionada = get_object_or_404(Usuario, id=entidad_id)
@@ -97,8 +97,9 @@ def admin_revision_documentacion(request, entidad_id=None):
 
             return redirect('admin_revision_documentacion_entidad', entidad_id=entidad_id)
 
-    if documentos:
-        total = documentos.count()
+    # Calcular porcentaje seguro
+    total = documentos.count()
+    if total > 0:
         validados = documentos.filter(estado='validado').count()
         porcentaje_validados = round((validados / total) * 100, 2)
     else:
@@ -259,6 +260,18 @@ def sincronizar_documentos_por_usuario():
 #REPORTES DE DOCUMENTOS 
 @user_passes_test(es_admin)
 def reporte_general_pdf(request):
+    anexos = AnexoRequerido.objects.all()
+    documentos = Documento.objects.all()
+
+    # Validar que existan anexos
+    if not anexos.exists():
+        messages.warning(request, "No hay anexos disponibles para generar el reporte.")
+        return redirect('admin_revision_documentacion')  # Cambia por la vista que quieras
+
+    if not documentos.exists():
+        messages.warning(request, "No hay documentos cargados para generar el reporte.")
+        return redirect('admin_revision_documentacion')
+
     buffer = BytesIO()
     pdf = SimpleDocTemplate(
         buffer, pagesize=letter,
