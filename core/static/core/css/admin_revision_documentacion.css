@@ -49,6 +49,7 @@
     border-collapse: collapse;
     background-color: white;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    table-layout: fixed; /* --- CORRECCIÓN 1: Añadido --- */
 }
 
 .tabla-documentos th, .tabla-documentos td, table th, table td {
@@ -56,7 +57,8 @@
     padding: 12px 15px;
     text-align: center;
     font-size: 14px;
-    white-space: nowrap; /* evita que se parta texto */
+    /* white-space: nowrap; */ /* --- CORRECCIÓN 2: Eliminado --- */
+    overflow-wrap: break-word; /* --- CORRECCIÓN 2: Añadido --- */
 }
 
 .tabla-documentos th, table th {
@@ -65,22 +67,31 @@
     color: #fff;
 }
 
-/* Anexos: columna 1 */
-table td:nth-child(1),
-table th:nth-child(1) {
-    width: 100px;
+/* --- CORRECCIÓN 3: Reemplazados anchos por Porcentajes --- */
+
+/* Columna 1: Documento (la más ancha) */
+table th:nth-child(1),
+table td:nth-child(1) {
+    width: 45%; 
+    text-align: left; /* El texto largo se ve mejor alineado a la izquierda */
 }
 
-/* Validar Estado: columna 3 */
-table td:nth-child(3),
-table th:nth-child(3) {
-    width: 140px;
+/* Columna 2: Observaciones */
+table th:nth-child(2),
+table td:nth-child(2) {
+    width: 30%;
 }
 
-/* Acciones: columna 4 (o 5 si mantuviste la columna Vista) */
-table td:nth-child(4),
-table th:nth-child(4) {
-    width: 100px;
+/* Columna 3: Validar Estado */
+table th:nth-child(3),
+table td:nth-child(3) {
+    width: 15%;
+}
+
+/* Columna 4: Acciones */
+table th:nth-child(4),
+table td:nth-child(4) {
+    width: 10%;
 }
 
 /* Botones */
@@ -148,13 +159,16 @@ table th:nth-child(4) {
 }
 
 /* Inputs textarea y selects */
+/* --- CORRECCIÓN 4: Arreglado el 'select' --- */
 select {
-    cursor: text;
+    width: 100%;            /* Añadido */
+    box-sizing: border-box; /* Añadido */
+    cursor: pointer;        /* Corregido (antes 'text') */
     font-size: 14px;
     padding: 6px;
     border-radius: 4px;
     border: 1px solid #ccc;
-    resize: vertical;
+    /* resize: vertical; */  /* Eliminado (no aplica) */
 }
 
 table td textarea {
@@ -178,8 +192,9 @@ table td textarea:focus {
 }
 
 /* Asegura alineación vertical al centro en todas las celdas */
+/* --- CORRECCIÓN 5: Alineación Vertical --- */
 table td {
-    vertical-align: middle;
+    vertical-align: top; /* Corregido (antes 'middle') */
 }
 
 /* Iconos de descarga y vista previa juntos */
