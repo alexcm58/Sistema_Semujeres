@@ -4,14 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Iniciar sesión</title>
-    <link rel="stylesheet" href="{% static 'core/css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/login.css' %}?v=1">
     <link rel="icon" href="{% static 'core/img/zaclogo-removebg-preview.png' %}" type="image/png">
     <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
 
 </head>
 <body>
 
-    <!-- Barra institucional superior -->
     <div class="barra-superior">
         <div class="barra-izquierda">
             <img src="{% static 'core/img/zaclogo.jpeg' %}" alt="Zacatecas Logo" class="logo-barra">
@@ -23,17 +22,20 @@
         </div>
     </div>
 
-    <!-- Banner del Modelo -->
     <div class="banner-modelo">
         <img src="{% static 'core/img/modelo_igualdad.jpg' %}" alt="Modelo Igualdad" class="logo-modelo-banner">
     </div>
 
-    <!-- Formulario de inicio de sesión -->
     <div class="login-container">
         <form method="post">
             {% csrf_token %}
             <input type="text" name="username" placeholder="Usuario">
-            <input type="password" name="password" placeholder="Contraseña">
+            
+            <div class="password-wrapper">
+                <input type="password" name="password" id="id_password" placeholder="Contraseña">
+                <i class="fa fa-eye" onclick="togglePassword('id_password', this)"></i>
+            </div>
+            
             <button type="submit">Iniciar sesión</button>
         </form>        
         <div class="links">
@@ -56,7 +58,6 @@
     {% endif %}
 
    <footer>
-       
         <div class="footer-container">
             
             <div class="footer-col footer-logo-1">
@@ -94,7 +95,28 @@
                 </div>
             </div>
         </div>
-
     </footer>
-</body>
+
+
+    <script>
+    function togglePassword(inputId, icon) {
+        var passwordField = document.getElementById(inputId);
+        
+        // Revisa el tipo actual del campo
+        if (passwordField.type === "password") {
+            // Si es 'password', cámbialo a 'text'
+            passwordField.type = "text";
+            // Cambia el icono a 'ojo tachado'
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            // Si es 'text', cámbialo de nuevo a 'password'
+            passwordField.type = "password";
+            // Cambia el icono de vuelta a 'ojo normal'
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+    </script>
+    </body>
 </html>

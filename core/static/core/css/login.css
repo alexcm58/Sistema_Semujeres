@@ -112,6 +112,9 @@ body {
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 6px;
+    
+    /* --- ¡ESTA ES LA CORRECCIÓN DE SIMETRÍA! --- */
+    box-sizing: border-box; 
 }
 
 .login-container button {
@@ -246,3 +249,53 @@ footer {
 .footer-logo img {
     max-width: 100px; /* Si tienes la clase vieja, le damos un max-width pequeño */
 }
+
+/* --- CSS CORREGIDO PARA EL ICONO DEL OJO --- */
+
+/* 1. El contenedor del 'ojo'.
+  Lo hacemos 'inline-block' para que se centre como tus otros inputs,
+  y le damos el mismo ancho (90%) y margen.
+*/
+.password-wrapper {
+    position: relative;
+    display: inline-block; /* Para que se centre */
+    width: 90%;           /* Igual que '.login-container input' */
+    margin: 10px 0;     /* Igual que '.login-container input' */
+}
+
+/* 2. El icono (<i>).
+  Lo posicionamos de forma absoluta DENTRO del 'password-wrapper'.
+*/
+.password-wrapper i {
+    position: absolute;
+    top: 50%;
+    right: 15px; /* Espacio desde la derecha */
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+}
+
+/* 3. El input DENTRO del wrapper.
+  Le decimos que ocupe el 100% de su wrapper y anulamos sus márgenes.
+*/
+.password-wrapper input {
+    /* Ocupa el 100% de su padre (.password-wrapper) */
+    width: 100%;
+    
+    /* Anulamos el margen de la regla general '.login-container input' */
+    margin: 0; 
+    
+    /* El padding-left (10px) ahora coincide con el input de usuario */
+    padding: 10px 40px 10px 10px; /* T, R, B, L */
+
+    /* Esto es VITAL: Evita que el 'padding-right' 
+      haga que el input se desborde.
+    */
+    box-sizing: border-box;
+
+    /* --- ¡ESTE CÓDIGO SE MOVIÓ AQUÍ! --- */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* --- (SE ELIMINÓ EL BLOQUE DUPLICADO DE AQUÍ) --- */
