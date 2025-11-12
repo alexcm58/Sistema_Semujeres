@@ -15,7 +15,7 @@
     <div class="barra-superior">
         <div class="barra-izquierda">
             <img src="{% static 'core/img/zaclogo.jpeg' %}" alt="Zacatecas Logo" class="logo-barra">
-            <a href="https://zacatecas.gob.mx" class="link-zacatecas" target="_blank">zacatecas.gob.mx</a>
+            <a href="{% url 'admin_revision_documentacion' %}" class="boton-inicio" >zacatecas.gob.mx</a>
         </div>
         <div class="barra-derecha">
             <a href="{% url 'admin_revision_documentacion' %}" class="boton-inicio">Inicio</a>
