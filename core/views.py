@@ -157,6 +157,12 @@ def admin_crear_usuario(request):
         form = CrearUsuarioForm()
     
     return render(request, 'core/admin_crear_usuario.html', {'form': form})
+
+from django.shortcuts import render, redirect  # <-- Asegúrate de tener 'redirect'
+from django.contrib import messages            # <-- Importar messages
+from django.contrib.auth.decorators import login_required
+# ... tus importaciones de modelos (Documento, AnexoRequerido, etc.)
+
 @login_required
 def usuario_dashboard(request):
     # 🔹 Asegurar que el usuario tenga documentos creados
@@ -166,12 +172,27 @@ def usuario_dashboard(request):
     documentos = Documento.objects.filter(usuario=request.user)
 
     if request.method == 'POST':
+        archivos_guardados = False  # Bandera para controlar si se subió algo
+
         for doc in documentos:
+            # Buscamos si viene un archivo para este documento específico
             archivo = request.FILES.get(f'documento_{doc.id}')
+            
             if archivo:
-                # ⚠️ opcional: si quieres permitir reemplazar archivos
-                doc.archivo = archivo  
+                doc.archivo = archivo
+                
+                # Opcional: Si el documento fue rechazado antes, al subir uno nuevo
+                # podrías querer regresarlo a estado 'pendiente' automáticamente:
+                if doc.estado == 'rechazado':
+                     doc.estado = 'pendiente'
+                
                 doc.save()
+                archivos_guardados = True  # ¡Se guardó al menos uno!
+
+        # Si se guardó al menos un archivo, mandamos el mensaje y recargamos
+        if archivos_guardados:
+            messages.success(request, '¡Documentos subidos exitosamente!')
+            return redirect('usuario_dashboard') # Redirige a la misma URL para limpiar el formulario
 
     # Cálculo del porcentaje validado
     total = documentos.count()

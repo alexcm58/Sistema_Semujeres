@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="{% static 'core/css/usuario_dashboard.css' %}">
     <link rel="icon" href="{% static 'core/img/zaclogo-removebg-preview.png' %}" type="image/png">
     <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
-    <!-- Barra superior institucional -->
     <div class="barra-superior">
         <div class="barra-izquierda">
             <img src="{% static 'core/img/zaclogo.jpeg' %}" alt="Zacatecas Logo" class="logo-barra">
@@ -23,12 +23,10 @@
         </div>
     </div>
 
-    <!-- Banner del Modelo -->
     <div class="banner-modelo">
         <img src="{% static 'core/img/modelo_igualdad.jpg' %}" alt="Modelo Igualdad" class="logo-modelo-banner">
     </div>
 
-    <!-- Contenido principal -->
     <main class="contenido">
         <h2>SUBIR DOCUMENTOS</h2>
 
@@ -47,8 +45,7 @@
             </div>
 
 
-        <!-- Formulario para subir documentos -->
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" id="form-subida">
             {% csrf_token %}
             <table class="tabla-documentos">
                 <thead>
@@ -107,16 +104,16 @@
                     {% endfor %}
                 </tbody>
             </table>
+            
             {% if documentos %}
             <div class="boton-subida">
-                <button type="submit">Subir Archivos Seleccionados</button>
+                <button type="button" onclick="validarYEnviar()">Subir Archivos Seleccionados</button>
             </div>
             {% endif %}
         </form>
     </main>
 
-    <!-- Footer institucional compacto -->
-   <footer>
+    <footer>
        
         <div class="footer-container">
             
@@ -158,27 +155,83 @@
 
     </footer>
 
+{% if messages %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% for message in messages %}
+            Swal.fire({
+                title: "{% if message.tags == 'success' %}¡Excelente!{% else %}Aviso{% endif %}",
+                text: "{{ message }}",
+                icon: "{% if message.tags == 'success' %}success{% else %}warning{% endif %}",
+                confirmButtonText: 'Aceptar',
+                confirmButtonColor: '#800040' // Color institucional Guinda
+            });
+        {% endfor %}
+    });
+</script>
+{% endif %}
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const fileInputs = document.querySelectorAll('.input-oculto');
+    // Función para validar si hay archivos antes de enviar y mostrar "Cargando"
+    function validarYEnviar() {
+        const fileInputs = document.querySelectorAll('.input-oculto');
+        let archivoSeleccionado = false;
 
-    fileInputs.forEach(input => {
-        input.addEventListener('change', () => {
-            const label = document.querySelector(`label[for="${input.id}"]`);
-
+        // Verificar si al menos un input tiene archivo
+        fileInputs.forEach(input => {
             if (input.files.length > 0) {
-                // Cambia color del círculo si hay archivo seleccionado
-                label.style.backgroundColor = '#4CAF50'; // verde
-            } else {
-                // Vuelve al color original si no hay archivo
-                label.style.backgroundColor = '#f0f0f0';
+                archivoSeleccionado = true;
             }
         });
-    });
-});
-</script>
 
+        if (archivoSeleccionado) {
+            // Mostrar mensaje de carga mientras el servidor procesa
+            let timerInterval;
+            Swal.fire({
+                title: 'Subiendo documentos...',
+                html: 'Por favor espere mientras guardamos su información.',
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Enviar el formulario
+            document.getElementById('form-subida').submit();
+        } else {
+            // Alerta si no seleccionó nada
+            Swal.fire({
+                title: 'Sin archivos',
+                text: 'Por favor selecciona al menos un documento para subir.',
+                icon: 'warning',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#800040'
+            });
+        }
+    }
+
+    // Lógica para cambiar color del icono cuando se selecciona archivo
+    document.addEventListener('DOMContentLoaded', () => {
+        const fileInputs = document.querySelectorAll('.input-oculto');
+
+        fileInputs.forEach(input => {
+            input.addEventListener('change', () => {
+                const label = document.querySelector(`label[for="${input.id}"]`);
+
+                if (input.files.length > 0) {
+                    // Cambia color a verde si hay archivo seleccionado
+                    label.style.backgroundColor = '#4CAF50'; 
+                    label.style.borderColor = '#4CAF50';
+                    // Opcional: Cambiar el icono o añadir borde visual
+                } else {
+                    // Vuelve al color original si no hay archivo
+                    label.style.backgroundColor = '#f0f0f0';
+                    label.style.borderColor = '#ccc';
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>
